@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import PrivacyAlert from '../components/PrivacyAlert';
 import '../styles/owl.css';
 
 function MyApp({ Component, pageProps }) {
@@ -12,6 +13,7 @@ function MyApp({ Component, pageProps }) {
             <Header />
             <Component {...pageProps} />
             <Footer />
+            <PrivacyAlert />
           </main>
         </div>
       </div>
