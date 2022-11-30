@@ -7,13 +7,13 @@ const Footer = () => {
                 <div className="col">
                     <p>
                         <Link href="/">Home</Link>&nbsp;&nbsp;
-                        <Link href="/">Items</Link>&nbsp;&nbsp;
-                        <Link href="/">Seller</Link>&nbsp;&nbsp;
-                        <Link href="/">Privacy</Link>&nbsp;&nbsp;
-                        <Link href="/">Terms of Service</Link>&nbsp;&nbsp;
-                        <Link href="/">Seller Tutorial</Link>&nbsp;&nbsp;
-                        <Link href="/">Buyer Tutorial</Link>&nbsp;&nbsp;
-                        <Link href="/">Commission</Link>&nbsp;&nbsp;
+                        <Link href="/bid">Items</Link>&nbsp;&nbsp;
+                        <Link href="/sell">Seller</Link>&nbsp;&nbsp;
+                        <Link href="/privacy">Privacy</Link>&nbsp;&nbsp;
+                        <Link href="/terms">Terms of Service</Link>&nbsp;&nbsp;
+                        <Link href="/tutorials/seller">Seller Tutorial</Link>&nbsp;&nbsp;
+                        <Link href="/tutorials/buyer">Buyer Tutorial</Link>&nbsp;&nbsp;
+                        <Link href="/tutorials/commission">Commission</Link>&nbsp;&nbsp;
                         | &copy; {(new Date().getFullYear())} Junk or Treasure Inc. All Rights Reserved.
                     </p>
                 </div>
