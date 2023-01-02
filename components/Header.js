@@ -15,6 +15,12 @@ const Header = () => {
                         <li className="nav-item px-1">
                             <Link href="/" className="nav-link">Home</Link>
                         </li>
+                        <li className="nav-item px-1">
+                            <Link href="/bid" className="nav-link">Buy</Link>
+                        </li>
+                        <li className="nav-item px-1">
+                            <Link href="/sell" className="nav-link">Sell</Link>
+                        </li>
                     </ul>
                 </div>
             </div>
