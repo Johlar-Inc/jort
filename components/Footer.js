@@ -2,8 +2,8 @@ import Link from "next/link";
 
 const Footer = () => {
     return (
-        <div className="container-fluid px-0 py-2 bg-light sticky-bottom border-top border-primary">
-            <div className="row">
+        <div className="container-fluid px-0 py-2 bg-light fixed-bottom border-top border-primary">
+            <div className="row px-3">
                 <div className="col">
                     <p>
                         <Link href="/">Home</Link>&nbsp;&nbsp;

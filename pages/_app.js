@@ -7,8 +7,8 @@ import '../styles/owl.css';
 function MyApp({ Component, pageProps }) {
   return (
     <div className="container-fluid px-0">
-      <div className="row">
-        <div className="col">
+      <div className="row mx-0">
+        <div className="col px-0">
           <main className="main">
             <Header />
             <Component {...pageProps} />
