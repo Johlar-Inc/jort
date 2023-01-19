@@ -46,7 +46,7 @@ const User = ({ loggedIn, setLoggedIn, setProfile }) => {
                     </div>
                 ) : (
                     <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
-                        This
+                        &nbsp;
                     </div>
                 )}
             </div>
