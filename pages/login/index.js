@@ -2,8 +2,10 @@ import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";
 import swal from "sweetalert";
+import { useRouter } from 'next/router';
 
 const User = ({ loggedIn, setLoggedIn, setProfile }) => {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -21,7 +23,8 @@ const User = ({ loggedIn, setLoggedIn, setProfile }) => {
         .then(result => {
             setLoggedIn(true);
             setProfile(result.data.user);
-            swal("Success!", "Your form submission was successful. You should hear back from us shortly.", "success")
+            swal("Success!", "Logging you in now...", "success");
+            router.push('/profile');
         })
         .catch(error => swal("Uh oh! Something went wrong. Please try again."))
     }
@@ -41,7 +44,7 @@ const User = ({ loggedIn, setLoggedIn, setProfile }) => {
                                 <input type="password" name="password" id="password" required className="form-control" value={password} onChange={e => setPassword(e.target.value)} />
                             </div>
                             <button className="btn btn-success" type="submit">Log In</button><br /><br />
-                            <Link href="/register">Don't have an account? Create one</Link>
+                            <Link href="/register">Don&rsquo;t have an account? Create one</Link>
                         </form>
                     </div>
                 ) : (

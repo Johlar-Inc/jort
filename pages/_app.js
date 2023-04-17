@@ -16,6 +16,13 @@ function MyApp({ Component, pageProps }) {
           <main className="main">
             <Header loggedIn={loggedIn} profile={profile} />
             <Component {...pageProps} loggedIn={loggedIn} setLoggedIn={setLoggedIn} profile={profile} setProfile={setProfile} />
+            <div className="container">
+              <div className="row">
+                <div className="col mb-3 pb-3">
+                  &nbsp;
+                </div>
+              </div>
+            </div>
             <Footer />
             <PrivacyAlert />
           </main>
