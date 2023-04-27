@@ -6,7 +6,6 @@ const Footer = () => {
             <div className="row px-3">
                 <div className="col">
                     <p>
-                        <Link href="/">Home</Link>&nbsp;&nbsp;
                         <Link href="/bid">Items</Link>&nbsp;&nbsp;
                         <Link href="/sell">Seller</Link>&nbsp;&nbsp;
                         <Link href="/privacy">Privacy</Link>&nbsp;&nbsp;

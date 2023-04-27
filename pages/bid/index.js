@@ -1,22 +1,74 @@
 /* eslint-disable @next/next/no-img-element */
 import axios from "axios";
 import { useEffect, useState } from "react";
+import swal from "sweetalert";
+import ProductCard from "../../components/ProductCard";
 
 const Bid = ({ loggedIn, profile }) => {
-    const [userID, setUserID] = useState(profile.id);
+    const [userID] = useState(profile.id);
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
         async function fetchData() {
-            const bidData = await axios(
+            const prodData = await axios(
                 'https://backend.jortinc.com/public/api/products'
             );
 
-            setProducts(bidData.data.data.reverse());
+            setProducts(prodData.data.data.reverse());
         }
 
         fetchData();
     }, [products]);
+
+    const itemBid = (id, increment, bid, level) => {
+        axios({
+            method: 'post',
+            url: `https://backend.jortinc.com/public/api/products/${id}`,
+            headers: { 'content-type': 'application/json' },
+            data: {
+                '_method': 'PATCH',
+                'current_bid': bid + increment,
+                'bid_level': level
+            }
+        })
+        .then(result => {
+            swal("Success!", "Your bid was placed successfully!", "success")
+        })
+        .catch(error => swal("Uh oh! Try again."));
+        axios({
+            method: 'post',
+            url: 'https://backend.jortinc.com/public/api/bids',
+            headers: { 'content-type': 'application/json' },
+            data: {
+                'user_id': userID,
+                'product_id': id,
+                'bid_amount': bid,
+                'first_name': profile.first_name,
+                'email': profile.email
+            }
+        })
+        .then(result => {
+            console.log(result.data)
+        })
+        .catch(error => console.log(error.data))
+    }
+
+    const levelUp = (id, increment, bid, level) => {
+        axios({
+            method: 'post',
+            url: `https://backend.jortinc.com/public/api/products/${id}`,
+            headers: { 'content-type': 'application/json' },
+            data: {
+                '_method': 'PATCH',
+                'current_bid': bid + increment,
+                'bid_level': level
+            }
+        })
+        .then(result => {
+            console.log(result.data)
+        })
+        .catch(error => console.log(error.data));
+    }
 
     return (
         <div className="container">
@@ -27,15 +79,13 @@ const Bid = ({ loggedIn, profile }) => {
                         <div className="container">
                             <div className="row justify-content-center">
                                 {products.map(i => (
-                                    <div className="col-md-4 col-sm-6 py-2" key={i.id}>
-                                        <div className="card px-0">
-                                            <img src={i.medias[0].url} width="100%" className="card-img-top" alt={i.title} />
-                                            <div className="card-body">
-                                                <h4 className="card-title">{i.title}</h4>
-                                                <p>{i.short_desc}</p>
+                                    <>
+                                        {i.bid_level < 5 && (
+                                            <div className="col-md-4 col-sm-6 py-2" key={i.id}>
+                                                <ProductCard i={i} itemBid={itemBid} userID={userID} levelUp={levelUp} />
                                             </div>
-                                        </div>
-                                    </div>
+                                        )}
+                                    </>
                                 ))}
                             </div>
                         </div>

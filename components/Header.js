@@ -14,16 +14,13 @@ const Header = ({ loggedIn, profile }) => {
                     {!loggedIn ? (
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-end">
                             <li className="nav-item px-1">
-                                <Link href="/login" className="nav-link">Log In</Link>
+                                <Link href="/" className="nav-link">Log In</Link>
                             </li>
                         </ul>
                     ) : (
                         <ul className="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-end">
                             <li className="nav-item px-1">
                                 <span className="nav-link">Hello, {profile.first_name}!</span>
-                            </li>
-                            <li className="nav-item px-1">
-                                <Link href="/" className="nav-link">Home</Link>
                             </li>
                             <li className="nav-item px-1">
                                 <Link href="/bid" className="nav-link">Buy</Link>
