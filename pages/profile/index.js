@@ -1,32 +1,18 @@
 import axios from "axios";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import swal from "sweetalert";
 
 const User = ({ loggedIn, profile, setProfile }) => {
-    const [firstName, setFirstName] = useState(profile.first_name);
-    const [lastName, setLastName] = useState(profile.last_name);
-    const [email, setEmail] = useState(profile.email);
-    const [password, setPassword] = useState([profile.password]);
+    const [firstName, setFirstName] = useState();
+    const [lastName, setLastName] = useState();
+    const [email, setEmail] = useState();
 
-    const saveProfile = e => {
-        e.preventDefault();
-        axios({
-            method: 'post',
-            url: 'https://backend.jortinc.com/public/api/register',
-            headers: { 'content-type': 'application/json' },
-            data: {
-                'email': email,
-                'first_name': firstName,
-                'last_name': lastName,
-                'password': password
-            }
-        })
-        .then(result => {
-            swal("Success!", "Your form submission was successful. You should hear back from us shortly.", "success")
-        })
-        .catch(error => swal("Uh oh! Something went wrong. Please try again."))
-    }
+    useEffect(() => {
+        setFirstName(profile.first_name);
+        setLastName(profile.last_name);
+        setEmail(profile.email);
+    }, [profile])
 
     return (
         <div className="container">
@@ -46,11 +32,6 @@ const User = ({ loggedIn, profile, setProfile }) => {
                                 <label htmlFor="email" className="form-label">Email Address</label>
                                 <input type="email" name="email" id="email" required className="form-control" value={email} disabled onChange={e => setEmail(e.target.value)} />
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="password" className="form-label">Password</label>
-                                <input type="password" name="password" id="password" required className="form-control" value={password} disabled onChange={e => setPassword(e.target.value)} />
-                            </div>
-                            <button className="btn btn-success" type="submit">Save</button><br /><br />
                         </form>
                     </div>
                 ) : (

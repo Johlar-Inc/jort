@@ -11,7 +11,7 @@ const TermsOfService = () => {
                             <ol>
                                 <li>It is however under the discretion of the owner or seller of the product to offer a refund.</li>
                                 <li>JORT inc does not own any products; we are simply an avenue that offers products and services, so it is up to the discretion of the site supervisor to offer any and all refunds.</li>
-                                <li>Although we do encourage New items to be under a warranty there is no guarantee of this and it's always up to the discretion of the seller if they offer this service.</li>
+                                <li>Although we do encourage New items to be under a warranty there is no guarantee of this and it&rsquo;s always up to the discretion of the seller if they offer this service.</li>
                                 <li>Any service that is purchased make sure you as the buyer/consumer are aware of all the terms before requesting a refund.</li>
                             </ol>
                         </li>
@@ -28,8 +28,8 @@ const TermsOfService = () => {
                         <li>
                             New Items
                             <ol>
-                                <li>We encourage all sellers to have a warranty on their products this however is not always the case so as usual it's buyer beware. But if you receive your item that doesn't match the description or not what you ordered.</li>
-                                <li>The item needs to be shipped the same day as the sale, when you purchase an item make sure you get a tracking number, if you don't receive a tracking number contact customer support.</li>
+                                <li>We encourage all sellers to have a warranty on their products this however is not always the case so as usual it&rsquo;s buyer beware. But if you receive your item that doesn&rsquo;t match the description or not what you ordered.</li>
+                                <li>The item needs to be shipped the same day as the sale, when you purchase an item make sure you get a tracking number, if you don&rsquo;t receive a tracking number contact customer support.</li>
                                 <li>We as well will track items so make sure the address the item is to be shipped is correct.</li>
                                 <li>We encourage feedback both good and bad. It helps us improve.</li>
                                 <li>When Pre-bidding on an item you may not have the winning bid, so make yourself available when it goes live however if there are no more bids once the item is live the highest pre-bid wins.</li>
@@ -37,7 +37,7 @@ const TermsOfService = () => {
                             </ol>
                         </li>
                     </ol>
-                    <p>We want to make this experience for you as much fun and carefree as possible, Any and all issues please bring it to our attention. We cannot fix something we don't know is broken, remember here at JORT inc we do not own any merchandise we are jus a avenue to be able to buy and sell as well as have services on or site.</p>
+                    <p>We want to make this experience for you as much fun and carefree as possible, Any and all issues please bring it to our attention. We cannot fix something we don&rsquo;t know is broken, remember here at JORT inc we do not own any merchandise we are jus a avenue to be able to buy and sell as well as have services on or site.</p>
                 </div>
             </div>
         </div>

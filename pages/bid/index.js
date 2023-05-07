@@ -5,7 +5,7 @@ import swal from "sweetalert";
 import ProductCard from "../../components/ProductCard";
 
 const Bid = ({ loggedIn, profile }) => {
-    const [userID] = useState(profile.id);
+    const [userID, setUserID] = useState();
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
@@ -18,7 +18,9 @@ const Bid = ({ loggedIn, profile }) => {
         }
 
         fetchData();
-    }, [products]);
+
+        setUserID(profile.id);
+    }, [products, profile]);
 
     const itemBid = (id, increment, bid, level) => {
         axios({
@@ -53,15 +55,15 @@ const Bid = ({ loggedIn, profile }) => {
         .catch(error => console.log(error.data))
     }
 
-    const levelUp = (id, increment, bid, level) => {
+    const bidEnd = (id, bid) => {
         axios({
             method: 'post',
             url: `https://backend.jortinc.com/public/api/products/${id}`,
             headers: { 'content-type': 'application/json' },
             data: {
                 '_method': 'PATCH',
-                'current_bid': bid + increment,
-                'bid_level': level
+                'current_bid': bid,
+                'bid_level': 5
             }
         })
         .then(result => {
@@ -82,7 +84,7 @@ const Bid = ({ loggedIn, profile }) => {
                                     <>
                                         {i.bid_level < 5 && (
                                             <div className="col-md-4 col-sm-6 py-2" key={i.id}>
-                                                <ProductCard i={i} itemBid={itemBid} userID={userID} levelUp={levelUp} />
+                                                <ProductCard i={i} itemBid={itemBid} userID={userID} bidEnd={bidEnd} />
                                             </div>
                                         )}
                                     </>
