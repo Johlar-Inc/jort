@@ -24,7 +24,7 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
             setLoggedIn(true);
             setProfile(result.data.user);
             swal("Success!", "Logging you in now...", "success");
-            router.push('/bid');
+            router.push('/profile');
         })
         .catch(error => swal("Uh oh! Something went wrong. Please try again."))
     }

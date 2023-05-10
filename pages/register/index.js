@@ -26,7 +26,7 @@ const Register = ({ profile, setProfile }) => {
         })
         .then(result => {
             swal("Success!", "Your form submission was successful. You should hear back from us shortly.", "success");
-            router.push('/profile');
+            router.push('/');
         })
         .catch(error => {
             swal("Uh oh! Something went wrong. Please try again."),
