@@ -1,7 +1,8 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
 
 /* eslint-disable @next/next/no-img-element */
-const ProductCard = ({ i, itemBid, userID, bidEnd }) => {
+const ProductCard = ({ i, itemBid, userID }) => {
     const [timer, setTimer] = useState(0);
     const [winningBidder, setWinningBidder] = useState('');
     const [bidLevel, setBidLevel] = useState('');
@@ -37,7 +38,20 @@ const ProductCard = ({ i, itemBid, userID, bidEnd }) => {
                 setBidLevel('');
                 setBarTimer(0);
                 if (i.bids.length > 0) {
-                    bidEnd(i.id, i.current_bid)
+                    axios({
+                        method: 'post',
+                        url: `https://backend.jortinc.com/public/api/products/${i.id}`,
+                        headers: { 'content-type': 'application/json' },
+                        data: {
+                            '_method': 'PATCH',
+                            'current_bid': i.current_bid,
+                            'bid_level': 5
+                        }
+                    })
+                    .then(result => {
+                        console.log(result.data)
+                    })
+                    .catch(error => console.log(error.data));
                 }
             }
         }, 500);

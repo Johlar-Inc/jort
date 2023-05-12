@@ -55,23 +55,6 @@ const Bid = ({ loggedIn, profile }) => {
         .catch(error => console.log(error.data))
     }
 
-    const bidEnd = (id, bid) => {
-        axios({
-            method: 'post',
-            url: `https://backend.jortinc.com/public/api/products/${id}`,
-            headers: { 'content-type': 'application/json' },
-            data: {
-                '_method': 'PATCH',
-                'current_bid': bid,
-                'bid_level': 5
-            }
-        })
-        .then(result => {
-            console.log(result.data)
-        })
-        .catch(error => console.log(error.data));
-    }
-
     return (
         <div className="container">
             <div className="row mx-0 justify-content-center">
@@ -84,7 +67,7 @@ const Bid = ({ loggedIn, profile }) => {
                                     <>
                                         {i.bid_level < 5 && (
                                             <div className="col-md-4 col-sm-6 py-2" key={i.id}>
-                                                <ProductCard i={i} itemBid={itemBid} userID={userID} bidEnd={bidEnd} />
+                                                <ProductCard i={i} itemBid={itemBid} userID={userID} />
                                             </div>
                                         )}
                                     </>
