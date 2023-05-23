@@ -11,28 +11,28 @@ const Header = ({ loggedIn, profile }) => {
                     <span className="navbar-toggler-icon"></span>
                 </button>
                 <div className="collapse navbar-collapse" id="navbarSupportedContent">
-                    {!loggedIn ? (
-                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-end">
+                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-end">
+                        {!loggedIn ? (
                             <li className="nav-item px-1">
                                 <Link href="/" className="nav-link">Log In</Link>
                             </li>
-                        </ul>
-                    ) : (
-                        <ul className="navbar-nav ms-auto mb-2 mb-lg-0 justify-content-end">
-                            <li className="nav-item px-1">
-                                <span className="nav-link">Hello, {profile.first_name}!</span>
-                            </li>
-                            <li className="nav-item px-1">
-                                <Link href="/bid" className="nav-link">Buy</Link>
-                            </li>
-                            <li className="nav-item px-1">
-                                <Link href="/sell" className="nav-link">Sell</Link>
-                            </li>
-                            <li className="nav-item px-1">
-                                <Link href="/profile" className="nav-link">Profile</Link>
-                            </li>
-                        </ul>
-                    )}
+                        ) : (
+                            <>
+                                <li className="nav-item px-1">
+                                    <span className="nav-link">Hello, {profile.first_name}!</span>
+                                </li>
+                                <li className="nav-item px-1">
+                                    <Link href="/bid" className="nav-link">Buy</Link>
+                                </li>
+                                <li className="nav-item px-1">
+                                    <Link href="/sell" className="nav-link">Sell</Link>
+                                </li>
+                                <li className="nav-item px-1">
+                                    <Link href="/profile" className="nav-link">Profile</Link>
+                                </li>
+                            </>
+                        )}
+                    </ul>
                 </div>
             </div>
         </nav>

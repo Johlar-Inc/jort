@@ -122,8 +122,8 @@ const Sell = ({ loggedIn, profile }) => {
                             <textarea name="longdesc" id="longdesc" required className="form-control" value={longDesc} onChange={e => setLongDesc(e.target.value)} rows={5} />
                         </div>
                         <div className="mb-3">
-                            <select className="form-select" value={category} onChange={e => setCategory(e.target.value)}>
-                                <option selected disabled value="">Please select a category</option>
+                            <select defaultValue="" className="form-select" value={category} onChange={e => setCategory(e.target.value)}>
+                                <option disabled value="">Please select a category</option>
                                 <option value="furniture">Furniture</option>
                                 <option value="clothing">Clothing</option>
                                 <option value="electronics">Electronics</option>
@@ -150,11 +150,11 @@ const Sell = ({ loggedIn, profile }) => {
                         <div className="container">
                             <div className="row mb-3">
                                 {itemImages.map(i => (
-                                    <div className="col-2" key={i.url}>
+                                    <div className="col-md-2 col-sm-12" key={i.url}>
                                         <img src={i.url} width="100%" alt="Image of item" />
                                     </div>
                                 ))}
-                                <div className="col-2">
+                                <div className="col-md-2 col-sm-12">
                                     <form onSubmit={fileUpload}>
                                         <input type="file" onChange={imageUpload} className="form-control my-2" />
                                         <h6>Be sure to press the upload button to add the image to the product you are about to sell</h6>

@@ -3,11 +3,15 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import PrivacyAlert from '../components/PrivacyAlert';
 import '../styles/owl.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 function MyApp({ Component, pageProps }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [profile, setProfile] = useState();
+
+  useEffect(() => {
+    require('bootstrap/dist/js/bootstrap.js');
+  }, [])
 
   return (
     <div className="container-fluid px-0">

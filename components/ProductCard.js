@@ -63,7 +63,11 @@ const ProductCard = ({ i, itemBid, userID }) => {
     
     return (
         <div className="card px-0">
-            <img src={i.medias[0].url} width="100%" className="card-img-top" alt={i.title} />
+            {i.medias.length > 0 && (
+                <>
+                    <img src={i.medias[0].url} width="100%" className="card-img-top" alt={i.title} />
+                </>
+            )}
             <div className="row card-body">
                 {timer > 0 && (
                     <div className="col-12">
