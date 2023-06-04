@@ -22,7 +22,7 @@ const Bid = ({ loggedIn, profile }) => {
         setUserID(profile.id);
     }, [products, profile]);
 
-    const itemBid = (id, increment, bid, level) => {
+    const itemBid = (id, increment, bid) => {
         axios({
             method: 'post',
             url: `https://backend.jortinc.com/public/api/products/${id}`,
@@ -30,7 +30,7 @@ const Bid = ({ loggedIn, profile }) => {
             data: {
                 '_method': 'PATCH',
                 'current_bid': bid + increment,
-                'bid_level': level
+                'bid_level': 0
             }
         })
         .then(result => {

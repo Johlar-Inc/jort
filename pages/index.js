@@ -34,18 +34,27 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
             <div className="row mx-0 justify-content-center">
                 {!loggedIn ? (
                     <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
-                        <form onSubmit={e => logIn(e)}>
-                            <div className="mb-3">
-                                <label htmlFor="email" className="form-label">Email Address</label>
-                                <input type="email" name="email" id="email" required className="form-control" value={email} onChange={e => setEmail(e.target.value)} />
+                        <div className="container">
+                            <div className="row">
+                                <div className="col-4">
+                                    &nbsp;
+                                </div>
+                                <div className="col-8">
+                                    <form onSubmit={e => logIn(e)}>
+                                        <div className="mb-3">
+                                            <label htmlFor="email" className="form-label">Email Address</label>
+                                            <input type="email" name="email" id="email" required className="form-control" value={email} onChange={e => setEmail(e.target.value)} />
+                                        </div>
+                                        <div className="mb-3">
+                                            <label htmlFor="password" className="form-label">Password</label>
+                                            <input type="password" name="password" id="password" required className="form-control" value={password} onChange={e => setPassword(e.target.value)} />
+                                        </div>
+                                        <button className="btn btn-success" type="submit">Log In</button><br /><br />
+                                        <Link href="/register">Don&rsquo;t have an account? Create one</Link>
+                                    </form>
+                                </div>
                             </div>
-                            <div className="mb-3">
-                                <label htmlFor="password" className="form-label">Password</label>
-                                <input type="password" name="password" id="password" required className="form-control" value={password} onChange={e => setPassword(e.target.value)} />
-                            </div>
-                            <button className="btn btn-success" type="submit">Log In</button><br /><br />
-                            <Link href="/register">Don&rsquo;t have an account? Create one</Link>
-                        </form>
+                        </div>
                     </div>
                 ) : (
                     <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
