@@ -2,9 +2,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { loadStripe } from '@stripe/stripe-js';
+import { StripePublicId } from "./StripeId";
 
 const ProductCard = ({ i, itemBid, userID }) => {
-    const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+    const stripePromise = loadStripe(StripePublicId);
 
     const [preHours, setPreHours] = useState(0);
     const [preMins, setPreMins] = useState(0);
@@ -101,9 +102,15 @@ const ProductCard = ({ i, itemBid, userID }) => {
 
     const createCheckOutSession = async () => {
         const stripe = await stripePromise;
+        let mediaImage;
+        if (i.medias.length > 0) {
+            mediaImage = i.medias[0].url
+        } else {
+            mediaImage = 'https://jortinc.com/img/jort-logo.png'
+        }
         const checkoutSession = await axios.post('/api/create-stripe-session', {
           item: {
-            picture: i.medias[0].url,
+            picture: mediaImage,
             price: Math.ceil(i.current_bid * 100),
             title: 'JORTinc - ' + i.title,
           }
