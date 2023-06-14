@@ -1,9 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import PrivacyAlert from '../components/PrivacyAlert';
 import '../styles/owl.css';
 import { useEffect, useState } from 'react';
+import CookieConsent from "react-cookie-consent";
 
 function MyApp({ Component, pageProps }) {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -28,7 +28,14 @@ function MyApp({ Component, pageProps }) {
               </div>
             </div>
             <Footer />
-            <PrivacyAlert />
+            <CookieConsent
+              location="bottom"
+              buttonText="Okay"
+              buttonStyle={{ backgroundColor: "darkred", color: "white" }}
+              style={{ background: "red", zIndex: 9999 }}
+            >
+              Ahoy me matey! Ye should know that Junk or Treasures collects data such as cookies to help you find the best loot for ye treasure. Refer to argh....I mean our privacy policy for more details.
+            </CookieConsent>
           </main>
         </div>
       </div>

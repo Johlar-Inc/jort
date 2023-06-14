@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import axios from "axios";
 import Link from "next/link";
 import { useState } from "react";
@@ -24,7 +25,7 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
             setLoggedIn(true);
             setProfile(result.data.user);
             swal("Success!", "Logging you in now...", "success");
-            router.push('/profile');
+            router.push('/bid');
         })
         .catch(error => swal("Uh oh! Something went wrong. Please try again."))
     }
@@ -37,7 +38,7 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
                         <div className="container">
                             <div className="row">
                                 <div className="col-4">
-                                    &nbsp;
+                                    <img src="https://jortinc.com/img/jort-logo.png" width="85%" alt="Junk or Treasures logo" />
                                 </div>
                                 <div className="col-8">
                                     <form onSubmit={e => logIn(e)}>

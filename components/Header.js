@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 
 const Header = ({ loggedIn, profile }) => {
@@ -5,7 +6,10 @@ const Header = ({ loggedIn, profile }) => {
         <nav className="navbar navbar-expand-lg bg-light sticky-top border-bottom border-primary">
             <div className="container">
                 <Link href="/" className="navbar-brand">
-                    <h3>Junk or Treasure</h3>
+                    <h3>
+                        <img src="https://jortinc.com/img/jort-logo.png" height="50" alt="Junk or Treasures Logo" />
+                        Junk or Treasure
+                    </h3>
                 </Link>
                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span className="navbar-toggler-icon"></span>

@@ -1,8 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { loadStripe } from '@stripe/stripe-js';
 
-/* eslint-disable @next/next/no-img-element */
 const ProductCard = ({ i, itemBid, userID }) => {
+    const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+
     const [preHours, setPreHours] = useState(0);
     const [preMins, setPreMins] = useState(0);
     const [preSecs, setPreSecs] = useState(0);
@@ -79,6 +82,9 @@ const ProductCard = ({ i, itemBid, userID }) => {
                         })
                         .then(result => {
                             console.log(result.data)
+                            if (userID === i.bids[i.bids.length - 1].user_id) {
+                                createCheckOutSession()
+                            }
                         })
                         .catch(error => console.log(error.data));
                     }
@@ -92,6 +98,23 @@ const ProductCard = ({ i, itemBid, userID }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [i.bids, timer, preHours, preMins, preSecs])
+
+    const createCheckOutSession = async () => {
+        const stripe = await stripePromise;
+        const checkoutSession = await axios.post('/api/create-stripe-session', {
+          item: {
+            picture: i.medias[0].url,
+            price: Math.ceil(i.current_bid * 100),
+            title: 'JORTinc - ' + i.title,
+          }
+        });
+        const result = await stripe.redirectToCheckout({
+          sessionId: checkoutSession.data.id,
+        });
+        if (result.error) {
+          alert(result.error.message);
+        }
+    };
     
     return (
         <div className="card px-0">
