@@ -10,11 +10,13 @@
     "punch-it": "next build && next export"
   },
   "dependencies": {
+    "@stripe/connect-js": "^1.0.3",
     "@stripe/stripe-js": "^1.54.0",
     "@tinymce/tinymce-react": "^4.3.0",
     "axios": "^1.1.3",
     "bootstrap": "^5.2.2",
     "framer-motion": "^7.6.6",
+    "js-cookie": "^3.0.5",
     "next": "13.0.6",
     "react": "18.2.0",
     "react-bootstrap": "^2.7.4",

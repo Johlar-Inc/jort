@@ -6,7 +6,6 @@ import { StripePublicId } from "./StripeId";
 
 const ProductCard = ({ i, itemBid, userID }) => {
     const stripePromise = loadStripe(StripePublicId);
-
     const [preHours, setPreHours] = useState(0);
     const [preMins, setPreMins] = useState(0);
     const [preSecs, setPreSecs] = useState(0);
@@ -15,6 +14,35 @@ const ProductCard = ({ i, itemBid, userID }) => {
     const [bidLevel, setBidLevel] = useState('');
     const [barTimer, setBarTimer] = useState(0);
     const [barWidth, setBarWidth] = useState(0);
+    const [stripeId, setStripeId] = useState();
+
+    useEffect(() => {
+        if (preHours === 0 && preMins < 20) {
+            if (i.bids.length > 0) {
+                const distinct = (value, index, self) => {
+                    return self.indexOf(value) === index;
+                }
+                const bidEmails = i.bids.filter(distinct);
+                for (let b = 0; b < bidEmails.length; b++) {
+                    console.log(bidEmails[b]);
+                    axios({
+                        method: 'post',
+                        url: 'https://backend.jortinc.com/public/api/products/bid_email',
+                        headers: { 'content-type': 'application/json' },
+                        data: {
+                            'first_name': bidEmails[b].first_name,
+                            'email': bidEmails[b].email,
+                            'title': i.title
+                        }
+                    })
+                    .then(result => {
+                        console.log('Email successfully sent to ' + bidEmails[b].email);
+                    })
+                }
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
         let dateTime = new Date(i.current_timer + ' UTC');
@@ -83,6 +111,20 @@ const ProductCard = ({ i, itemBid, userID }) => {
                         })
                         .then(result => {
                             console.log(result.data)
+                            axios({
+                                method: 'post',
+                                url: 'https://backend.jortinc.com/public/api/winners',
+                                headers: { 'content-type': 'application/json' },
+                                data: {
+                                    'product_id': i.id,
+                                    'user_id': i.bids[i.bids.length - 1].user_id,
+                                    'payment_status': 'pending'
+                                }
+                            })
+                            .then(res => {
+                                console.log(res.data)
+                            })
+                            .catch(error => console.log(error.data))
                             if (userID === i.bids[i.bids.length - 1].user_id) {
                                 createCheckOutSession()
                             }
@@ -101,6 +143,52 @@ const ProductCard = ({ i, itemBid, userID }) => {
     }, [i.bids, timer, preHours, preMins, preSecs])
 
     const createCheckOutSession = async () => {
+        let jortsCut;
+        if (i.current_bid <= 15) {
+            jortsCut = parseFloat(i.current_bid * 0.03).toFixed(2);
+        } else if (i.current_bid > 15 && i.current_bid <= 25) {
+            jortsCut = parseFloat(i.current_bid * 0.04).toFixed(2);
+        } else if (i.current_bid > 25 && i.current_bid <= 50) {
+            jortsCut = parseFloat(i.current_bid * 0.05).toFixed(2);
+        } else if (i.current_bid > 50 && i.current_bid <= 75) {
+            jortsCut = parseFloat(i.current_bid * 0.06).toFixed(2);
+        } else if (i.current_bid > 75 && i.current_bid <= 100) {
+            jortsCut = parseFloat(i.current_bid * 0.07).toFixed(2);
+        } else if (i.current_bid > 100 && i.current_bid <= 150) {
+            jortsCut = parseFloat(i.current_bid * 0.08).toFixed(2);
+        } else if (i.current_bid > 150 && i.current_bid <= 200) {
+            jortsCut = parseFloat(i.current_bid * 0.09).toFixed(2);
+        } else if (i.current_bid > 200 && i.current_bid <= 250) {
+            jortsCut = parseFloat(i.current_bid * 0.10).toFixed(2);
+        } else if (i.current_bid > 250 && i.current_bid <= 350) {
+            jortsCut = parseFloat(i.current_bid * 0.11).toFixed(2);
+        } else if (i.current_bid > 350 && i.current_bid <= 450) {
+            jortsCut = parseFloat(i.current_bid * 0.12).toFixed(2);
+        } else if (i.current_bid > 450 && i.current_bid <= 550) {
+            jortsCut = parseFloat(i.current_bid * 0.13).toFixed(2);
+        } else if (i.current_bid > 550 && i.current_bid <= 700) {
+            jortsCut = parseFloat(i.current_bid * 0.14).toFixed(2);
+        } else if (i.current_bid > 700 && i.current_bid <= 850) {
+            jortsCut = parseFloat(i.current_bid * 0.15).toFixed(2);
+        } else if (i.current_bid > 850 && i.current_bid <= 1000) {
+            jortsCut = parseFloat(i.current_bid * 0.16).toFixed(2);
+        } else if (i.current_bid > 1000 && i.current_bid <= 1500) {
+            jortsCut = parseFloat(i.current_bid * 0.17).toFixed(2);
+        } else if (i.current_bid > 1500 && i.current_bid <= 2000) {
+            jortsCut = parseFloat(i.current_bid * 0.18).toFixed(2);
+        } else if (i.current_bid > 2000 && i.current_bid <= 2500) {
+            jortsCut = parseFloat(i.current_bid * 0.19).toFixed(2);
+        } else {
+            jortsCut = parseFloat(i.current_bid * 0.20).toFixed(2);
+        }
+        console.log(jortsCut);
+        axios({
+            method: "GET",
+            url: `https://backend.jortinc.com/public/api/users/${i.seller_id}`
+        })
+        .then(result => {
+            setStripeId(result.data.data.stripeid)
+        })
         const stripe = await stripePromise;
         let mediaImage;
         if (i.medias.length > 0) {
@@ -108,13 +196,16 @@ const ProductCard = ({ i, itemBid, userID }) => {
         } else {
             mediaImage = 'https://jortinc.com/img/jort-logo.png'
         }
-        const checkoutSession = await axios.post('/api/create-stripe-session', {
-          item: {
-            picture: mediaImage,
-            price: Math.ceil(i.current_bid * 100),
-            title: 'JORTinc - ' + i.title,
-          }
+        const checkoutSession = await axios.post('https://backend.jortinc.com/public/api/create-stripe-session', {
+            item: {
+                picture: mediaImage,
+                price: Math.ceil(i.current_bid * 100),
+                title: 'JORTinc - ' + i.title,
+            },
+            application_fee: Math.ceil(jortsCut * 100),
+            stripe_id: stripeId,
         });
+        console.log(checkoutSession.data);
         const result = await stripe.redirectToCheckout({
           sessionId: checkoutSession.data.id,
         });

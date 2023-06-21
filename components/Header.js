@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 
-const Header = ({ loggedIn, profile }) => {
+const Header = ({ loggedIn, profile, logout }) => {
     return (
         <nav className="navbar navbar-expand-lg bg-light sticky-top border-bottom border-primary">
             <div className="container">
@@ -33,6 +33,9 @@ const Header = ({ loggedIn, profile }) => {
                                 </li>
                                 <li className="nav-item px-1">
                                     <Link href="/profile" className="nav-link">Profile</Link>
+                                </li>
+                                <li className="nav-item px-1">
+                                    <Link href="/" className="nav-link" onClick={() => logout()}>Log Out</Link>
                                 </li>
                             </>
                         )}

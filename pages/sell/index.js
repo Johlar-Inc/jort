@@ -1,23 +1,24 @@
 /* eslint-disable @next/next/no-img-element */
-import { useState, useRef } from "react";
+import { useState } from "react";
 import axios from "axios";
-import { Editor } from "@tinymce/tinymce-react";
 import swal from "sweetalert";
 import { useRouter } from 'next/router';
 import { ThreeDots } from "react-loader-spinner";
+import Cookies from "js-cookie";
 
-const Sell = ({ loggedIn, profile }) => {
+const Sell = ({ loggedIn, profile, setStripeSession }) => {
     const router = useRouter();
     const [prodName, setProdName] = useState('');
     const [shortDesc, setShortDesc] = useState('');
     const [longDesc, setLongDesc] = useState('');
-    const editorRef = useRef(null);
     const [category, setCategory] = useState('');
     const [startBid, setStartBid] = useState(0);
     const [bidIncrement, setBidIncrement] = useState(0);
     const [uploadImage, setUploadImage] = useState('');
     const [itemImages, setItemImages] = useState([]);
     const [showLoader, setShowLoader] = useState(false);
+
+    const stripeCookie = Cookies.get("stripekey");
 
     const imageUpload = e => {
         let file = e.target.files[0];
@@ -93,6 +94,22 @@ const Sell = ({ loggedIn, profile }) => {
         }, 5500)
     }
 
+    const fetchClientSecret = () => {
+        axios({
+            method: "POST",
+            url: "https://backend.jortinc.com/public/api/express-account",
+            header: { 'content-type': 'application/json' },
+        })
+        .then(result => {
+            console.log(result.data.id);
+            setStripeSession(result.data.id);
+        })
+        // .catch(error => {
+        //     swal("Unable to get a response from Stripe. Please try again.")
+        //     console.log(error.data)
+        // })
+    }
+
     return (
         <div className="container">
             <ThreeDots 
@@ -106,7 +123,7 @@ const Sell = ({ loggedIn, profile }) => {
                 visible={showLoader}
             />
             <div className="row mx-0 justify-content-center">
-                {loggedIn ? (
+                {loggedIn && stripeCookie ? (
                     <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
                         <h2>Sell</h2>
                         <div className="mb-3">
@@ -128,6 +145,7 @@ const Sell = ({ loggedIn, profile }) => {
                                 <option value="clothing">Clothing</option>
                                 <option value="electronics">Electronics</option>
                                 <option value="automotive">Automotive</option>
+                                <option value="services">Services</option>
                                 <option value="other">Other</option>
                             </select>
                         </div>
@@ -168,7 +186,14 @@ const Sell = ({ loggedIn, profile }) => {
                         </div>
                     </div>
                 ) : (
-                    <h2>Please Login and agree to the seller terms of service to sell items on this site</h2>
+                    <>
+                        {!loggedIn && (
+                            <h2>Please Login and agree to the seller terms of service to sell items on this site</h2>
+                        )}
+                        {!stripeCookie && (
+                            <button onClick={() => fetchClientSecret()}>Please click here to connect to Stripe</button>
+                        )}
+                    </>
                 )}
             </div>
         </div>
