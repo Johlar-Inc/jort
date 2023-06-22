@@ -25,9 +25,11 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
         .then(result => {
             setLoggedIn(true);
             setProfile(result.data.user);
-            Cookies.set("profilekey", result.data.token, { expires: 7 })
             swal("Success!", "Logging you in now...", "success");
-            router.push('/bid');
+            setTimeout(() => {
+                window.localStorage.setItem("profile", JSON.stringify(profile));
+                router.push('/bid');
+            }, 1500);
         })
         .catch(error => swal("Uh oh! Something went wrong. Please try again."))
     }

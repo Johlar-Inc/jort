@@ -4,9 +4,8 @@ import axios from "axios";
 import swal from "sweetalert";
 import { useRouter } from 'next/router';
 import { ThreeDots } from "react-loader-spinner";
-import Cookies from "js-cookie";
 
-const Sell = ({ loggedIn, profile, setStripeSession }) => {
+const Sell = ({ loggedIn, profile }) => {
     const router = useRouter();
     const [prodName, setProdName] = useState('');
     const [shortDesc, setShortDesc] = useState('');
@@ -17,8 +16,6 @@ const Sell = ({ loggedIn, profile, setStripeSession }) => {
     const [uploadImage, setUploadImage] = useState('');
     const [itemImages, setItemImages] = useState([]);
     const [showLoader, setShowLoader] = useState(false);
-
-    const stripeCookie = Cookies.get("stripekey");
 
     const imageUpload = e => {
         let file = e.target.files[0];
@@ -83,7 +80,6 @@ const Sell = ({ loggedIn, profile, setStripeSession }) => {
                         .then(result => {
                             swal("Success!", "Your item has been added. Redirecting you to the bidding floor now.", "success");
                             router.push('/bid');
-                            console.log(result);
                         })
                         .catch(error => swal("Uh oh! Something went wrong. Please try again."));
                     }
@@ -99,15 +95,26 @@ const Sell = ({ loggedIn, profile, setStripeSession }) => {
             method: "POST",
             url: "https://backend.jortinc.com/public/api/express-account",
             header: { 'content-type': 'application/json' },
+            data: {
+                'first_name': profile.first_name,
+                'last_name': profile.last_name,
+                'email': profile.email,
+                'country': 'US'
+            }
         })
         .then(result => {
-            console.log(result.data.id);
-            setStripeSession(result.data.id);
+            window.localStorage.setItem("stripeKey", result.data.express_account_info.id);
+            axios({
+                method: "post",
+                url: `https://backend.jortinc.com/public/api/stripe-key/${profile.id}`,
+                header: { 'content-type': 'application/json' },
+                data: {
+                    '_method': 'PATCH',
+                    'stripeid': result.data.express_account_info.id,
+                }
+            })
+            router.push(result.data.stripe_url.url);
         })
-        // .catch(error => {
-        //     swal("Unable to get a response from Stripe. Please try again.")
-        //     console.log(error.data)
-        // })
     }
 
     return (
@@ -123,7 +130,7 @@ const Sell = ({ loggedIn, profile, setStripeSession }) => {
                 visible={showLoader}
             />
             <div className="row mx-0 justify-content-center">
-                {loggedIn && stripeCookie ? (
+                {loggedIn && profile.stripeid ? (
                     <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
                         <h2>Sell</h2>
                         <div className="mb-3">
@@ -190,7 +197,7 @@ const Sell = ({ loggedIn, profile, setStripeSession }) => {
                         {!loggedIn && (
                             <h2>Please Login and agree to the seller terms of service to sell items on this site</h2>
                         )}
-                        {!stripeCookie && (
+                        {!profile.stripeid && (
                             <button onClick={() => fetchClientSecret()}>Please click here to connect to Stripe</button>
                         )}
                     </>

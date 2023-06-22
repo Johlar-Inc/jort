@@ -96,40 +96,8 @@ const ProductCard = ({ i, itemBid, userID }) => {
                     setBidLevel('danger');
                     setBarTimer(timer);
                 } else if (timer === 0) {
-                    setBidLevel('');
-                    setBarTimer(0);
-                    if (i.bids.length > 0) {
-                        axios({
-                            method: 'post',
-                            url: `https://backend.jortinc.com/public/api/products/${i.id}`,
-                            headers: { 'content-type': 'application/json' },
-                            data: {
-                                '_method': 'PATCH',
-                                'current_bid': i.current_bid,
-                                'bid_level': 5
-                            }
-                        })
-                        .then(result => {
-                            console.log(result.data)
-                            axios({
-                                method: 'post',
-                                url: 'https://backend.jortinc.com/public/api/winners',
-                                headers: { 'content-type': 'application/json' },
-                                data: {
-                                    'product_id': i.id,
-                                    'user_id': i.bids[i.bids.length - 1].user_id,
-                                    'payment_status': 'pending'
-                                }
-                            })
-                            .then(res => {
-                                console.log(res.data)
-                            })
-                            .catch(error => console.log(error.data))
-                            if (userID === i.bids[i.bids.length - 1].user_id) {
-                                createCheckOutSession()
-                            }
-                        })
-                        .catch(error => console.log(error.data));
+                    if (userID === i.bids[i.bids.length - 1].user_id) {
+                        createCheckOutSession()
                     }
                 }
             }
@@ -181,7 +149,6 @@ const ProductCard = ({ i, itemBid, userID }) => {
         } else {
             jortsCut = parseFloat(i.current_bid * 0.20).toFixed(2);
         }
-        console.log(jortsCut);
         axios({
             method: "GET",
             url: `https://backend.jortinc.com/public/api/users/${i.seller_id}`
@@ -205,12 +172,44 @@ const ProductCard = ({ i, itemBid, userID }) => {
             application_fee: Math.ceil(jortsCut * 100),
             stripe_id: stripeId,
         });
-        console.log(checkoutSession.data);
         const result = await stripe.redirectToCheckout({
           sessionId: checkoutSession.data.id,
         });
         if (result.error) {
           alert(result.error.message);
+        } else {
+            setBidLevel('');
+            setBarTimer(0);
+            if (i.bids.length > 0) {
+                axios({
+                    method: 'post',
+                    url: `https://backend.jortinc.com/public/api/products/${i.id}`,
+                    headers: { 'content-type': 'application/json' },
+                    data: {
+                        '_method': 'PATCH',
+                        'current_bid': i.current_bid,
+                        'bid_level': 5
+                    }
+                })
+                .then(result => {
+                    console.log(result.data)
+                    axios({
+                        method: 'post',
+                        url: 'https://backend.jortinc.com/public/api/winners',
+                        headers: { 'content-type': 'application/json' },
+                        data: {
+                            'product_id': i.id,
+                            'user_id': i.bids[i.bids.length - 1].user_id,
+                            'payment_status': 'pending'
+                        }
+                    })
+                    .then(res => {
+                        console.log(res.data)
+                    })
+                    .catch(error => console.log(error.data))
+                })
+                .catch(error => console.log(error.data));
+            }
         }
     };
     
