@@ -130,77 +130,76 @@ const Sell = ({ loggedIn, profile }) => {
                 visible={showLoader}
             />
             <div className="row mx-0 justify-content-center">
-                {loggedIn && profile.stripeid ? (
+                {loggedIn ? (
                     <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
-                        <h2>Sell</h2>
-                        <div className="mb-3">
-                            <label htmlFor="prodname" className="form-label">Product Name</label>
-                            <input type="text" name="prodname" id="prodname" required className="form-control" value={prodName} onChange={e => setProdName(e.target.value)} />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="shortdesc" className="form-label">Short Description</label>
-                            <input type="text" name="shortdesc" id="shortdesc" required className="form-control" value={shortDesc} onChange={e => setShortDesc(e.target.value)} />
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="longdesc" className="form-label">Long Description</label>
-                            <textarea name="longdesc" id="longdesc" required className="form-control" value={longDesc} onChange={e => setLongDesc(e.target.value)} rows={5} />
-                        </div>
-                        <div className="mb-3">
-                            <select defaultValue="" className="form-select" value={category} onChange={e => setCategory(e.target.value)}>
-                                <option disabled value="">Please select a category</option>
-                                <option value="furniture">Furniture</option>
-                                <option value="clothing">Clothing</option>
-                                <option value="electronics">Electronics</option>
-                                <option value="automotive">Automotive</option>
-                                <option value="services">Services</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="startBid" className="form-label">Starting Bid (in US dollars)</label>
-                            <div className="input-group">
-                                <span className="input-group-text">$</span>
-                                <input type="text" name="startBid" id="startBid" className="form-control" required value={startBid} onChange={e => setStartBid(e.target.value)} />
-                                <span className="input-group-text">.00</span>
-                            </div>
-                        </div>
-                        <div className="mb-3">
-                            <label htmlFor="bidIncrement" className="form-label">Bid Increment (in US dollars)</label>
-                            <div className="input-group">
-                                <span className="input-group-text">$</span>
-                                <input type="text" name="bidIncrement" id="bidIncrement" className="form-control" required value={bidIncrement} onChange={e => setBidIncrement(e.target.value)} />
-                                <span className="input-group-text">.00</span>
-                            </div>
-                        </div>
-                        <div className="container">
-                            <div className="row mb-3">
-                                {itemImages.map(i => (
-                                    <div className="col-md-2 col-sm-12" key={i.url}>
-                                        <img src={i.url} width="100%" alt="Image of item" />
-                                    </div>
-                                ))}
-                                <div className="col-md-2 col-sm-12">
-                                    <form onSubmit={fileUpload}>
-                                        <input type="file" onChange={imageUpload} className="form-control my-2" />
-                                        <h6>Be sure to press the upload button to add the image to the product you are about to sell</h6>
-                                        <button type="submit" className="btn btn-outline-success">Upload</button>
-                                    </form>
+                        {profile.stripeid ? (
+                            <>
+                                <h2>Sell</h2>
+                                <div className="mb-3">
+                                    <label htmlFor="prodname" className="form-label">Product Name</label>
+                                    <input type="text" name="prodname" id="prodname" required className="form-control" value={prodName} onChange={e => setProdName(e.target.value)} />
                                 </div>
-                            </div>
-                        </div>
-                        <div className="mb-3">
-                            <button type="button" className="btn btn-primary" onClick={() => handleProductAdd()}>Submit</button>
-                        </div>
-                    </div>
-                ) : (
-                    <>
-                        {!loggedIn && (
-                            <h2>Please Login and agree to the seller terms of service to sell items on this site</h2>
-                        )}
-                        {!profile.stripeid && (
+                                <div className="mb-3">
+                                    <label htmlFor="shortdesc" className="form-label">Short Description</label>
+                                    <input type="text" name="shortdesc" id="shortdesc" required className="form-control" value={shortDesc} onChange={e => setShortDesc(e.target.value)} />
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="longdesc" className="form-label">Long Description</label>
+                                    <textarea name="longdesc" id="longdesc" required className="form-control" value={longDesc} onChange={e => setLongDesc(e.target.value)} rows={5} />
+                                </div>
+                                <div className="mb-3">
+                                    <select defaultValue="" className="form-select" value={category} onChange={e => setCategory(e.target.value)}>
+                                        <option disabled value="">Please select a category</option>
+                                        <option value="furniture">Furniture</option>
+                                        <option value="clothing">Clothing</option>
+                                        <option value="electronics">Electronics</option>
+                                        <option value="automotive">Automotive</option>
+                                        <option value="services">Services</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="startBid" className="form-label">Starting Bid (in US dollars)</label>
+                                    <div className="input-group">
+                                        <span className="input-group-text">$</span>
+                                        <input type="text" name="startBid" id="startBid" className="form-control" required value={startBid} onChange={e => setStartBid(e.target.value)} />
+                                        <span className="input-group-text">.00</span>
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <label htmlFor="bidIncrement" className="form-label">Bid Increment (in US dollars)</label>
+                                    <div className="input-group">
+                                        <span className="input-group-text">$</span>
+                                        <input type="text" name="bidIncrement" id="bidIncrement" className="form-control" required value={bidIncrement} onChange={e => setBidIncrement(e.target.value)} />
+                                        <span className="input-group-text">.00</span>
+                                    </div>
+                                </div>
+                                <div className="container">
+                                    <div className="row mb-3">
+                                        {itemImages.map(i => (
+                                            <div className="col-md-2 col-sm-12" key={i.url}>
+                                                <img src={i.url} width="100%" alt="Image of item" />
+                                            </div>
+                                        ))}
+                                        <div className="col-md-2 col-sm-12">
+                                            <form onSubmit={fileUpload}>
+                                                <input type="file" onChange={imageUpload} className="form-control my-2" />
+                                                <h6>Be sure to press the upload button to add the image to the product you are about to sell</h6>
+                                                <button type="submit" className="btn btn-outline-success">Upload</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="mb-3">
+                                    <button type="button" className="btn btn-primary" onClick={() => handleProductAdd()}>Submit</button>
+                                </div>
+                            </>
+                        ) : (
                             <button onClick={() => fetchClientSecret()}>Please click here to connect to Stripe</button>
                         )}
-                    </>
+                    </div>
+                ) : (
+                    <h2>Please Login and agree to the seller terms of service to sell items on this site</h2>
                 )}
             </div>
         </div>
