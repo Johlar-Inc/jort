@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import '../styles/owl.css';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import CookieConsent from "react-cookie-consent";
 import swal from 'sweetalert';
@@ -12,16 +12,14 @@ function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const [loggedIn, setLoggedIn] = useState(false);
   const [profile, setProfile] = useState();
-  const [stripeKey, setStripeKey] = useState();
 
   useEffect(() => {
     require('bootstrap/dist/js/bootstrap.js');
   }, []);
 
-  const initialRender = useRef(true);
-
   useEffect(() => {
-    if (localStorage.getItem("profile")) {
+    const loggingIn = localStorage.getItem("loggedIn");
+    if (localStorage.getItem("profile") && loggingIn === true) {
       setProfile(JSON.parse(localStorage.getItem("profile")));
       setLoggedIn(true);
     }
@@ -39,11 +37,10 @@ function MyApp({ Component, pageProps }) {
     })
     .then(result => {
       swal('Successfully logged out');
-      initialRender.current = true;
-      window.localStorage.removeItem("profile");
+      localStorage.removeItem("profile");
+      localStorage.setItem("loggingIn", false);
       setProfile(null);
       setLoggedIn(false);
-      router.push('/');
     })
     .catch(error => { swal('Error logging out. Please try again.') })
   }

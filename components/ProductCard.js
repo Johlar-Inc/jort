@@ -11,7 +11,6 @@ const ProductCard = ({ i, userID, profile }) => {
     const [preSecs, setPreSecs] = useState(0);
     const [timer, setTimer] = useState(0);
     const [winningBidder, setWinningBidder] = useState('');
-    const [currentBid, setCurrentBid] = useState(i.current_bid);
     const [bidLevel, setBidLevel] = useState('');
     const [barTimer, setBarTimer] = useState(0);
     const [barWidth, setBarWidth] = useState(0);
@@ -103,12 +102,12 @@ const ProductCard = ({ i, userID, profile }) => {
                 } else if (timer > 0 && timer < 15) {
                     setBidLevel('danger');
                     setBarTimer(timer);
-                // } else if (timer === 0) {
-                //     if (i.bids.length > 0) {
-                //         if (userID === i.bids[i.bids.length - 1].user_id) {
-                //             createCheckOutSession()
-                //         }
-                //     }
+                } else if (timer === 0) {
+                    if (i.bids.length > 0) {
+                        if (userID === i.bids[i.bids.length - 1].user_id) {
+                            createCheckOutSession()
+                        }
+                    }
                 }
             }
             console.log(timer)
@@ -128,13 +127,13 @@ const ProductCard = ({ i, userID, profile }) => {
             headers: { 'content-type': 'application/json' },
             data: {
                 '_method': 'PATCH',
-                'current_bid': i.current_bid,
+                'current_bid': i.new_bid,
+                'new_bid': i.new_bid + i.increment,
                 'bid_level': 0,
             }
         })
         .then(result => {
             setCountdown(new Date(result.data.current_timer));
-            setCurrentBid(i.current_bid + i.increment)
             axios({
                 method: 'post',
                 url: 'https://backend.jortinc.com/public/api/bids',
@@ -142,7 +141,7 @@ const ProductCard = ({ i, userID, profile }) => {
                 data: {
                     'user_id': userID,
                     'product_id': i.id,
-                    'bid_amount': i.current_bid,
+                    'bid_amount': i.new_bid,
                     'first_name': profile.first_name,
                     'email': profile.email
                 }
@@ -284,7 +283,7 @@ const ProductCard = ({ i, userID, profile }) => {
                     {i.seller_id === userID ? (
                         <h6>You are not allowed to bid on your own item</h6>
                     ) : (
-                        <button className="btn btn-success" onClick={() => itemBid()}>Bid ${currentBid}</button>
+                        <button className="btn btn-success" onClick={() => itemBid()}>Bid ${i.new_bid}</button>
                     )}
                 </div>
                 <div className="col-6">

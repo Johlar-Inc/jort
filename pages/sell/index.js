@@ -84,6 +84,7 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                     'category': category,
                     'current_bid': startBid,
                     'increment': bidIncrement,
+                    'new_bid': startBid,
                 }
             })
             .then(result => {
