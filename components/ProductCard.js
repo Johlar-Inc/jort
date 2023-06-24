@@ -62,7 +62,6 @@ const ProductCard = ({ i, userID, profile }) => {
 
         const intervalId = setInterval(() => {
             setCurrentTime(new Date());
-            console.log(Math.ceil((countdown - currentTime) / 1000));
             if (sixHourWindow > currentTime) {
                 let preTimer = Math.abs(sixHourWindow - currentTime) / 1000;
                 let seconds = Math.ceil(preTimer) % 60;
@@ -102,7 +101,7 @@ const ProductCard = ({ i, userID, profile }) => {
                 } else if (timer > 0 && timer < 15) {
                     setBidLevel('danger');
                     setBarTimer(timer);
-                } else if (timer === 0) {
+                } else if (timer <= 0) {
                     if (i.bids.length > 0) {
                         if (userID === i.bids[i.bids.length - 1].user_id) {
                             createCheckOutSession()
@@ -110,7 +109,6 @@ const ProductCard = ({ i, userID, profile }) => {
                     }
                 }
             }
-            console.log(timer)
         }, 500);
         if (barTimer) {
             setBarWidth(Math.ceil((barTimer / 15) * 100));
