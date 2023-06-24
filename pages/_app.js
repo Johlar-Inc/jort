@@ -21,22 +21,11 @@ function MyApp({ Component, pageProps }) {
   const initialRender = useRef(true);
 
   useEffect(() => {
-    if (localStorage.getItem("stripeKey")) {
-      setStripeKey(localStorage.getItem("stripeKey"));
-    }
-    if (JSON.parse(localStorage.getItem("profile"))) {
+    if (localStorage.getItem("profile")) {
       setProfile(JSON.parse(localStorage.getItem("profile")));
+      setLoggedIn(true);
     }
   }, [])
-
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    window.localStorage.setItem("stripeKey", stripeKey);
-    window.localStorage.setItem("profile", JSON.stringify(profile));
-  }, [stripeKey, profile])
 
   const logout = () => {
     axios({
@@ -51,7 +40,6 @@ function MyApp({ Component, pageProps }) {
     .then(result => {
       swal('Successfully logged out');
       initialRender.current = true;
-      window.localStorage.removeItem("stripeKey");
       window.localStorage.removeItem("profile");
       setProfile(null);
       setLoggedIn(false);

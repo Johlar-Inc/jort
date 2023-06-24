@@ -4,8 +4,9 @@ import axios from "axios";
 import swal from "sweetalert";
 import { useRouter } from 'next/router';
 import { ThreeDots } from "react-loader-spinner";
+import { useEffect } from "react";
 
-const Sell = ({ loggedIn, profile }) => {
+const Sell = ({ loggedIn, profile, setProfile }) => {
     const router = useRouter();
     const [prodName, setProdName] = useState('');
     const [shortDesc, setShortDesc] = useState('');
@@ -16,6 +17,26 @@ const Sell = ({ loggedIn, profile }) => {
     const [uploadImage, setUploadImage] = useState('');
     const [itemImages, setItemImages] = useState([]);
     const [showLoader, setShowLoader] = useState(false);
+
+    useEffect(() => {
+        console.log(profile)
+        if (profile) {
+            if (profile.stripeid) {
+                axios({
+                    method: 'post',
+                    url: 'https://backend.jortinc.com/public/api/retrieve-stripe',
+                    data: {
+                        'stripekey': profile.stripeid
+                    }
+                })
+                .then(result => {
+                    console.log('oh good that worked')
+                })
+                .catch(error => console.log(error.data));
+            }
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     const imageUpload = e => {
         let file = e.target.files[0];
@@ -103,7 +124,6 @@ const Sell = ({ loggedIn, profile }) => {
             }
         })
         .then(result => {
-            window.localStorage.setItem("stripeKey", result.data.express_account_info.id);
             axios({
                 method: "post",
                 url: `https://backend.jortinc.com/public/api/stripe-key/${profile.id}`,
@@ -113,7 +133,16 @@ const Sell = ({ loggedIn, profile }) => {
                     'stripeid': result.data.express_account_info.id,
                 }
             })
-            router.push(result.data.stripe_url.url);
+            .then(result => {
+                setProfile(result.data);
+                setTimeout(() => {
+                    window.localStorage.setItem("profile", JSON.stringify(result.data));
+                    swal('Connecting you to Stripe now');
+                }, 1500);
+            })
+            setTimeout(() => {
+                router.push(result.data.stripe_url.url);
+            }, 3000);
         })
     }
 

@@ -1,6 +1,29 @@
+import axios from "axios";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-const TermsOfService = () => {
+const TermsOfService = ({ setProfile }) => {
+    const searchParams = useSearchParams();
+    const stripeFail = searchParams.get('stripeFail');
+    if (stripeFail) {
+        axios({
+            method: "post",
+            url: `https://backend.jortinc.com/public/api/stripe-key/${profile.id}`,
+            header: { 'content-type': 'application/json' },
+            data: {
+                '_method': 'PATCH',
+                'stripeid': null,
+            }
+        })
+        .then(result => {
+            setProfile(result.data);
+            setTimeout(() => {
+                window.localStorage.setItem("profile", JSON.stringify(result.data));
+                swal('You have not completed connecting your Stripe account to JORT. Please go back to the sellers page after reading the Terms of Service.')
+            }, 1500);
+        })
+    }
+
     return (
         <div className="container">
             <div className="row">

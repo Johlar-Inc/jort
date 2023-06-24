@@ -26,7 +26,7 @@ const Header = ({ loggedIn, profile, logout }) => {
                                     <span className="nav-link">Hello, {profile.first_name}!</span>
                                 </li>
                                 <li className="nav-item px-1">
-                                    <Link href="/bid" className="nav-link">Buy</Link>
+                                    <Link href="/bid" className="nav-link">Bid</Link>
                                 </li>
                                 <li className="nav-item px-1">
                                     <Link href="/sell" className="nav-link">Sell</Link>

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useState } from "react";
 import swal from "sweetalert";
 import { useRouter } from 'next/router';
-import Cookies from "js-cookie";
 
 const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
     const router = useRouter();
@@ -27,7 +26,7 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
             setProfile(result.data.user);
             swal("Success!", "Logging you in now...", "success");
             setTimeout(() => {
-                window.localStorage.setItem("profile", JSON.stringify(profile));
+                window.localStorage.setItem("profile", JSON.stringify(result.data.user));
                 router.push('/bid');
             }, 1500);
         })

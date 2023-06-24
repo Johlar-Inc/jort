@@ -4,27 +4,37 @@ import { useEffect, useState } from "react";
 import { loadStripe } from '@stripe/stripe-js';
 import { StripePublicId } from "./StripeId";
 
-const ProductCard = ({ i, itemBid, userID }) => {
+const ProductCard = ({ i, userID, profile }) => {
     const stripePromise = loadStripe(StripePublicId);
     const [preHours, setPreHours] = useState(0);
     const [preMins, setPreMins] = useState(0);
     const [preSecs, setPreSecs] = useState(0);
     const [timer, setTimer] = useState(0);
     const [winningBidder, setWinningBidder] = useState('');
+    const [currentBid, setCurrentBid] = useState(i.current_bid);
     const [bidLevel, setBidLevel] = useState('');
     const [barTimer, setBarTimer] = useState(0);
     const [barWidth, setBarWidth] = useState(0);
     const [stripeId, setStripeId] = useState();
+    const [countdown, setCountdown] = useState();
+    const [currentTime, setCurrentTime] = useState(new Date());
+    const [sixHourWindow, setSixHourWindow] = useState(new Date(i.pre_timer + ' UTC'));
 
     useEffect(() => {
-        if (preHours === 0 && preMins < 20) {
+        if (i.current_timer && currentTime > sixHourWindow) {
+            setCountdown(i.current_timer);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [i.current_timer, currentTime]);
+
+    useEffect(() => {
+        if (preHours === 0 && (preMins < 20 && preMins > 0)) {
             if (i.bids.length > 0) {
                 const distinct = (value, index, self) => {
                     return self.indexOf(value) === index;
                 }
                 const bidEmails = i.bids.filter(distinct);
                 for (let b = 0; b < bidEmails.length; b++) {
-                    console.log(bidEmails[b]);
                     axios({
                         method: 'post',
                         url: 'https://backend.jortinc.com/public/api/products/bid_email',
@@ -45,19 +55,17 @@ const ProductCard = ({ i, itemBid, userID }) => {
     }, [])
 
     useEffect(() => {
-        let dateTime = new Date(i.current_timer + ' UTC');
-
-        let sixHourTimer = new Date(i.pre_timer + ' UTC');
-    
-        let currentDate = new Date();
-    
         if (i.bids.length > 0) {
             setWinningBidder(i.bids[i.bids.length - 1].first_name);
+        } else {
+            setWinningBidder('');
         }
 
         const intervalId = setInterval(() => {
-            if (sixHourTimer > currentDate) {
-                let preTimer = Math.abs(sixHourTimer - currentDate) / 1000;
+            setCurrentTime(new Date());
+            console.log(Math.ceil((countdown - currentTime) / 1000));
+            if (sixHourWindow > currentTime) {
+                let preTimer = Math.abs(sixHourWindow - currentTime) / 1000;
                 let seconds = Math.ceil(preTimer) % 60;
                 let minutes = Math.ceil(preTimer / 60) % 60;
                 if (seconds < 10) {
@@ -80,8 +88,8 @@ const ProductCard = ({ i, itemBid, userID }) => {
                 }
                 setPreHours(Math.floor(preTimer / 3600));
             } else {
-                if (dateTime > currentDate) {
-                    setTimer(Math.ceil((dateTime - currentDate) / 1000));
+                if (countdown && countdown > currentTime) {
+                    setTimer(Math.ceil((countdown - currentTime) / 1000));
                 }
                 if (timer >= 45 && timer < 60) {
                     setBidLevel('primary');
@@ -95,12 +103,15 @@ const ProductCard = ({ i, itemBid, userID }) => {
                 } else if (timer > 0 && timer < 15) {
                     setBidLevel('danger');
                     setBarTimer(timer);
-                } else if (timer === 0) {
-                    if (userID === i.bids[i.bids.length - 1].user_id) {
-                        createCheckOutSession()
-                    }
+                // } else if (timer === 0) {
+                //     if (i.bids.length > 0) {
+                //         if (userID === i.bids[i.bids.length - 1].user_id) {
+                //             createCheckOutSession()
+                //         }
+                //     }
                 }
             }
+            console.log(timer)
         }, 500);
         if (barTimer) {
             setBarWidth(Math.ceil((barTimer / 15) * 100));
@@ -108,7 +119,40 @@ const ProductCard = ({ i, itemBid, userID }) => {
         return () => clearInterval(intervalId);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [i.bids, timer, preHours, preMins, preSecs])
+    }, [i.bids, timer, preHours, preMins, preSecs, countdown, currentTime]);
+
+    const itemBid = () => {
+        axios({
+            method: 'post',
+            url: `https://backend.jortinc.com/public/api/products/${i.id}`,
+            headers: { 'content-type': 'application/json' },
+            data: {
+                '_method': 'PATCH',
+                'current_bid': i.current_bid,
+                'bid_level': 0,
+            }
+        })
+        .then(result => {
+            setCountdown(new Date(result.data.current_timer));
+            setCurrentBid(i.current_bid + i.increment)
+            axios({
+                method: 'post',
+                url: 'https://backend.jortinc.com/public/api/bids',
+                headers: { 'content-type': 'application/json' },
+                data: {
+                    'user_id': userID,
+                    'product_id': i.id,
+                    'bid_amount': i.current_bid,
+                    'first_name': profile.first_name,
+                    'email': profile.email
+                }
+            })
+            .then(result => {
+                swal("Success!", "Your bid was placed successfully!", "success")
+            })
+            .catch(error => console.log(error.data))
+        })
+    }
 
     const createCheckOutSession = async () => {
         let jortsCut;
@@ -240,7 +284,7 @@ const ProductCard = ({ i, itemBid, userID }) => {
                     {i.seller_id === userID ? (
                         <h6>You are not allowed to bid on your own item</h6>
                     ) : (
-                        <button className="btn btn-success" onClick={() => itemBid(i.id, i.increment, i.current_bid)}>Bid ${i.current_bid}</button>
+                        <button className="btn btn-success" onClick={() => itemBid()}>Bid ${currentBid}</button>
                     )}
                 </div>
                 <div className="col-6">
