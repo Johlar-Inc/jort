@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps }) {
 
   useEffect(() => {
     const loggingIn = localStorage.getItem("loggedIn");
-    if (localStorage.getItem("profile") && loggingIn === true) {
+    if (localStorage.getItem("profile") && loggingIn == "true") {
       setProfile(JSON.parse(localStorage.getItem("profile")));
       setLoggedIn(true);
     }
@@ -38,7 +38,7 @@ function MyApp({ Component, pageProps }) {
     .then(result => {
       swal('Successfully logged out');
       localStorage.removeItem("profile");
-      localStorage.setItem("loggingIn", false);
+      localStorage.setItem("loggedIn", false);
       setProfile(null);
       setLoggedIn(false);
     })

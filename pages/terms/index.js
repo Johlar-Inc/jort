@@ -1,8 +1,10 @@
 import axios from "axios";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 
-const TermsOfService = ({ setProfile }) => {
+const TermsOfService = ({ setProfile, profile }) => {
+    const router = useRouter();
     const searchParams = useSearchParams();
     const stripeFail = searchParams.get('stripeFail');
     if (stripeFail) {
@@ -19,7 +21,16 @@ const TermsOfService = ({ setProfile }) => {
             setProfile(result.data);
             setTimeout(() => {
                 window.localStorage.setItem("profile", JSON.stringify(result.data));
-                swal('You have not completed connecting your Stripe account to JORT. Please go back to the sellers page after reading the Terms of Service.')
+                swal({
+                    title: "Error Completing Stripe Connect Account",
+                    text: "You have not completed connecting your Stripe account to JORT. Please go back to the sellers page after reading the Terms of Service.",
+                    icon: "warning",
+                })
+                .then(pressedOkay => {
+                    if (pressedOkay) {
+                        router.push('/tutorials/seller');
+                    }
+                })
             }, 1500);
         })
     }

@@ -30,7 +30,7 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                     }
                 })
                 .then(result => {
-                    console.log('oh good that worked')
+                    console.log(result);
                 })
                 .catch(error => console.log(error.data));
             }
@@ -85,6 +85,7 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                     'current_bid': startBid,
                     'increment': bidIncrement,
                     'new_bid': startBid,
+                    'stripeid': profile.stripeid,
                 }
             })
             .then(result => {

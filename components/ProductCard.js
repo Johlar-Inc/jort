@@ -14,7 +14,6 @@ const ProductCard = ({ i, userID, profile }) => {
     const [bidLevel, setBidLevel] = useState('');
     const [barTimer, setBarTimer] = useState(0);
     const [barWidth, setBarWidth] = useState(0);
-    const [stripeId, setStripeId] = useState();
     const [countdown, setCountdown] = useState();
     const [currentTime, setCurrentTime] = useState(new Date());
     const [sixHourWindow, setSixHourWindow] = useState(new Date(i.pre_timer + ' UTC'));
@@ -190,13 +189,6 @@ const ProductCard = ({ i, userID, profile }) => {
         } else {
             jortsCut = parseFloat(i.current_bid * 0.20).toFixed(2);
         }
-        axios({
-            method: "GET",
-            url: `https://backend.jortinc.com/public/api/users/${i.seller_id}`
-        })
-        .then(result => {
-            setStripeId(result.data.data.stripeid)
-        })
         const stripe = await stripePromise;
         let mediaImage;
         if (i.medias.length > 0) {
@@ -211,7 +203,7 @@ const ProductCard = ({ i, userID, profile }) => {
                 title: 'JORTinc - ' + i.title,
             },
             application_fee: Math.ceil(jortsCut * 100),
-            stripe_id: stripeId,
+            stripe_id: i.stripeid,
         });
         const result = await stripe.redirectToCheckout({
           sessionId: checkoutSession.data.id,
