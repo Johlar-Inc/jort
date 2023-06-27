@@ -26,8 +26,8 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
             setProfile(result.data.user);
             swal("Success!", "Logging you in now...", "success");
             setTimeout(() => {
-                window.localStorage.setItem("loggedIn", true);
-                window.localStorage.setItem("profile", JSON.stringify(result.data.user));
+                localStorage.setItem("loggedIn", true);
+                localStorage.setItem("profile", JSON.stringify(result.data.user));
                 router.push('/bid');
             }, 1500);
         })

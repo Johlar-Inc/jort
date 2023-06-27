@@ -138,7 +138,7 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
             .then(result => {
                 setProfile(result.data);
                 setTimeout(() => {
-                    window.localStorage.setItem("profile", JSON.stringify(result.data));
+                    localStorage.setItem("profile", JSON.stringify(result.data));
                     swal('Connecting you to Stripe now');
                 }, 1500);
             })

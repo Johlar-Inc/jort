@@ -1,7 +1,13 @@
 /* eslint-disable @next/next/no-img-element */
 import Link from "next/link";
 
-const Header = ({ loggedIn, profile, logout }) => {
+const Header = ({ loggedIn, profile }) => {
+
+    const logout = () => {
+        localStorage.clear();
+        router.push("/");
+    }
+
     return (
         <nav className="navbar navbar-expand-lg bg-light sticky-top border-bottom border-primary">
             <div className="container">
@@ -35,7 +41,7 @@ const Header = ({ loggedIn, profile, logout }) => {
                                     <Link href="/profile" className="nav-link">Profile</Link>
                                 </li>
                                 <li className="nav-item px-1">
-                                    <Link href="/" className="nav-link" onClick={() => logout()}>Log Out</Link>
+                                    <a href="" className="nav-link" onClick={() => logout()}>Log Out</a>
                                 </li>
                             </>
                         )}

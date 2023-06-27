@@ -86,26 +86,31 @@ const ProductCard = ({ i, userID, profile }) => {
                 }
                 setPreHours(Math.floor(preTimer / 3600));
             } else {
-                if (countdown && countdown > currentTime) {
-                    setTimer(Math.ceil((countdown - currentTime) / 1000));
-                }
-                if (timer >= 45 && timer < 60) {
-                    setBidLevel('primary');
-                    setBarTimer(timer - 45);
-                } else if (timer >= 30 && timer < 45) {
-                    setBidLevel('success');
-                    setBarTimer(timer - 30);
-                } else if (timer >= 15 && timer < 30) {
-                    setBidLevel('warning');
-                    setBarTimer(timer - 15);
-                } else if (timer > 0 && timer < 15) {
-                    setBidLevel('danger');
-                    setBarTimer(timer);
-                } else if (timer <= 0) {
-                    if (i.bids.length > 0) {
-                        if (userID === i.bids[i.bids.length - 1].user_id) {
-                            createCheckOutSession()
+                if (countdown) {
+                    if (countdown > currentTime) {
+                        setTimer(Math.round((countdown - currentTime) / 1000));
+                        if (timer >= 45 && timer < 60) {
+                            setBidLevel('primary');
+                            setBarTimer(timer - 45);
+                        } else if (timer >= 30 && timer < 45) {
+                            setBidLevel('success');
+                            setBarTimer(timer - 30);
+                        } else if (timer >= 15 && timer < 30) {
+                            setBidLevel('warning');
+                            setBarTimer(timer - 15);
+                        } else {
+                            setBidLevel('danger');
+                            setBarTimer(timer);
                         }
+                    } else {
+                        setTimer(0);
+                        setTimeout(() => {
+                            if (i.bids.length > 0) {
+                                if (userID === i.bids[i.bids.length - 1].user_id) {
+                                    createCheckOutSession()
+                                }
+                            }
+                        }, 1500);
                     }
                 }
             }

@@ -20,7 +20,7 @@ const TermsOfService = ({ setProfile, profile }) => {
         .then(result => {
             setProfile(result.data);
             setTimeout(() => {
-                window.localStorage.setItem("profile", JSON.stringify(result.data));
+                localStorage.setItem("profile", JSON.stringify(result.data));
                 swal({
                     title: "Error Completing Stripe Connect Account",
                     text: "You have not completed connecting your Stripe account to JORT. Please go back to the sellers page after reading the Terms of Service.",

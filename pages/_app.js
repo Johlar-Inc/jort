@@ -25,33 +25,13 @@ function MyApp({ Component, pageProps }) {
     }
   }, [])
 
-  const logout = () => {
-    axios({
-      method: 'post',
-      url: `https://backend.jortinc.com/public/api/stripe-key/${profile.id}`,
-      headers: { 'content-type': 'application/json' },
-      data: {
-        '_method': 'PATCH',
-        'stripeid': null
-      }
-    })
-    .then(result => {
-      swal('Successfully logged out');
-      localStorage.removeItem("profile");
-      localStorage.setItem("loggedIn", false);
-      setProfile(null);
-      setLoggedIn(false);
-    })
-    .catch(error => { swal('Error logging out. Please try again.') })
-  }
-
   return (
     <div className="container-fluid px-0">
       <div className="row mx-0">
         <div className="col px-0">
           <main className="main">
             <Header loggedIn={loggedIn} profile={profile} />
-            <Component {...pageProps} loggedIn={loggedIn} setLoggedIn={setLoggedIn} profile={profile} setProfile={setProfile} logout={logout} />
+            <Component {...pageProps} loggedIn={loggedIn} setLoggedIn={setLoggedIn} profile={profile} setProfile={setProfile} />
             <div className="container">
               <div className="row">
                 <div className="col mb-3 pb-3">
