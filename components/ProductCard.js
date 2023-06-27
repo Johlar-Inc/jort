@@ -15,6 +15,7 @@ const ProductCard = ({ i, userID, profile }) => {
     const [barTimer, setBarTimer] = useState(0);
     const [barWidth, setBarWidth] = useState(0);
     const [countdown, setCountdown] = useState();
+    const [currentBid, setCurrentBid] = useState();
     const [currentTime, setCurrentTime] = useState(new Date());
     const [sixHourWindow, setSixHourWindow] = useState(new Date(i.pre_timer + ' UTC'));
 
@@ -117,6 +118,10 @@ const ProductCard = ({ i, userID, profile }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [i.bids, timer, preHours, preMins, preSecs, countdown, currentTime]);
 
+    useEffect(() => {
+        setCurrentBid(i.new_bid);
+    }, [i.new_bid]);
+
     const itemBid = () => {
         axios({
             method: 'post',
@@ -124,13 +129,14 @@ const ProductCard = ({ i, userID, profile }) => {
             headers: { 'content-type': 'application/json' },
             data: {
                 '_method': 'PATCH',
-                'current_bid': i.new_bid,
-                'new_bid': i.new_bid + i.increment,
+                'current_bid': currentBid,
+                'new_bid': currentBid + i.increment,
                 'bid_level': 0,
             }
         })
         .then(result => {
             setCountdown(new Date(result.data.current_timer));
+            setCurrentBid(result.data.new_bid);
             axios({
                 method: 'post',
                 url: 'https://backend.jortinc.com/public/api/bids',
@@ -138,12 +144,13 @@ const ProductCard = ({ i, userID, profile }) => {
                 data: {
                     'user_id': userID,
                     'product_id': i.id,
-                    'bid_amount': i.new_bid,
+                    'bid_amount': currentBid,
                     'first_name': profile.first_name,
                     'email': profile.email
                 }
             })
             .then(result => {
+                console.log(i.bids);
                 swal("Success!", "Your bid was placed successfully!", "success")
             })
             .catch(error => console.log(error.data))
@@ -273,7 +280,7 @@ const ProductCard = ({ i, userID, profile }) => {
                     {i.seller_id === userID ? (
                         <h6>You are not allowed to bid on your own item</h6>
                     ) : (
-                        <button className="btn btn-success" onClick={() => itemBid()}>Bid ${i.new_bid}</button>
+                        <button className="btn btn-success" onClick={() => itemBid()}>Bid ${currentBid}</button>
                     )}
                 </div>
                 <div className="col-6">

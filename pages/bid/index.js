@@ -20,7 +20,7 @@ const Bid = ({ loggedIn, profile }) => {
     fetchData();
 
     if (profile) setUserID(profile.id);
-  }, [profile]);
+  }, [products, profile]);
 
   const handleTooltipClick = (item) => {
     swal(
