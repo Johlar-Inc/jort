@@ -163,6 +163,38 @@ const ProductCard = ({ i, userID, profile }) => {
     }
 
     const createCheckOutSession = async () => {
+        setBidLevel('');
+        setBarTimer(0);
+        if (i.bids.length > 0) {
+            axios({
+                method: 'post',
+                url: `https://backend.jortinc.com/public/api/products/${i.id}`,
+                headers: { 'content-type': 'application/json' },
+                data: {
+                    '_method': 'PATCH',
+                    'current_bid': i.current_bid,
+                    'bid_level': 5
+                }
+            })
+            .then(result => {
+                console.log(result.data)
+                axios({
+                    method: 'post',
+                    url: 'https://backend.jortinc.com/public/api/winners',
+                    headers: { 'content-type': 'application/json' },
+                    data: {
+                        'product_id': i.id,
+                        'user_id': i.bids[i.bids.length - 1].user_id,
+                        'payment_status': 'pending'
+                    }
+                })
+                .then(res => {
+                    console.log(res.data)
+                })
+                .catch(error => console.log(error.data))
+            })
+            .catch(error => console.log(error.data));
+        }
         let jortsCut;
         if (i.current_bid <= 15) {
             jortsCut = parseFloat(i.current_bid * 0.03).toFixed(2);
@@ -222,39 +254,6 @@ const ProductCard = ({ i, userID, profile }) => {
         });
         if (result.error) {
           alert(result.error.message);
-        } else {
-            setBidLevel('');
-            setBarTimer(0);
-            if (i.bids.length > 0) {
-                axios({
-                    method: 'post',
-                    url: `https://backend.jortinc.com/public/api/products/${i.id}`,
-                    headers: { 'content-type': 'application/json' },
-                    data: {
-                        '_method': 'PATCH',
-                        'current_bid': i.current_bid,
-                        'bid_level': 5
-                    }
-                })
-                .then(result => {
-                    console.log(result.data)
-                    axios({
-                        method: 'post',
-                        url: 'https://backend.jortinc.com/public/api/winners',
-                        headers: { 'content-type': 'application/json' },
-                        data: {
-                            'product_id': i.id,
-                            'user_id': i.bids[i.bids.length - 1].user_id,
-                            'payment_status': 'pending'
-                        }
-                    })
-                    .then(res => {
-                        console.log(res.data)
-                    })
-                    .catch(error => console.log(error.data))
-                })
-                .catch(error => console.log(error.data));
-            }
         }
     };
     
