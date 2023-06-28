@@ -16,15 +16,13 @@ const ProductCard = ({ i, userID, profile }) => {
     const [barWidth, setBarWidth] = useState(0);
     const [countdown, setCountdown] = useState();
     const [currentBid, setCurrentBid] = useState();
-    const [currentTime, setCurrentTime] = useState(new Date());
-    const [sixHourWindow, setSixHourWindow] = useState(new Date(i.pre_timer + ' UTC'));
+    const [currentTime, setCurrentTime] = useState();
+    const [sixHourWindow, setSixHourWindow] = useState();
 
     useEffect(() => {
-        if (i.current_timer && currentTime > sixHourWindow) {
-            setCountdown(i.current_timer);
-        }
+        setSixHourWindow(Date.parse(i.pre_timer + ' GMT'));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [i.current_timer, currentTime]);
+    }, []);
 
     useEffect(() => {
         if (preHours === 0 && (preMins < 20 && preMins > 0)) {
@@ -51,7 +49,7 @@ const ProductCard = ({ i, userID, profile }) => {
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (i.bids.length > 0) {
@@ -61,7 +59,14 @@ const ProductCard = ({ i, userID, profile }) => {
         }
 
         const intervalId = setInterval(() => {
-            setCurrentTime(new Date());
+            let rightNow = new Date().toLocaleString('en-US', { timeZone: 'GMT' });
+            setCurrentTime(Date.parse(rightNow));
+
+            if (i.current_timer) {
+                let utcTimer = new Date(i.current_timer).toLocaleString();
+                setCountdown(Date.parse(utcTimer));
+            }
+
             if (sixHourWindow > currentTime) {
                 let preTimer = Math.abs(sixHourWindow - currentTime) / 1000;
                 let seconds = Math.ceil(preTimer) % 60;
@@ -140,7 +145,7 @@ const ProductCard = ({ i, userID, profile }) => {
             }
         })
         .then(result => {
-            setCountdown(new Date(result.data.current_timer));
+            setTimer(60);
             setCurrentBid(result.data.new_bid);
             axios({
                 method: 'post',
@@ -155,7 +160,6 @@ const ProductCard = ({ i, userID, profile }) => {
                 }
             })
             .then(result => {
-                console.log(i.bids);
                 swal("Success!", "Your bid was placed successfully!", "success")
             })
             .catch(error => console.log(error.data))
