@@ -103,7 +103,7 @@ const ProductCard = ({ i, userID, profile }) => {
                         } else if (timer >= 15 && timer < 30) {
                             setBidLevel('warning');
                             setBarTimer(timer - 15);
-                        } else {
+                        } else if (timer < 15) {
                             setBidLevel('danger');
                             setBarTimer(timer);
                         }
