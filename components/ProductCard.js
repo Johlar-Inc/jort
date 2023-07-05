@@ -20,7 +20,8 @@ const ProductCard = ({ i, userID, profile }) => {
     const [sixHourWindow, setSixHourWindow] = useState();
 
     useEffect(() => {
-        setSixHourWindow(Date.parse(i.pre_timer + ' GMT'));
+        let sixHours = new Date(i.pre_timer).toLocaleString();
+        setSixHourWindow(Date.parse(sixHours));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

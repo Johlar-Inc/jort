@@ -37,7 +37,7 @@ const Register = ({ profile, setProfile }) => {
             }
         })
         .then(result => {
-            swal("Success!", "Your form submission was successful. You should hear back from us shortly.", "success");
+            swal("Success!", "You have successfully registered. Please sign in with your new info and happy bidding!", "success");
             router.push('/');
         })
         .catch(error => {
