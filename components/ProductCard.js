@@ -146,7 +146,11 @@ const ProductCard = ({ i, userID, profile }) => {
             }
         })
         .then(result => {
-            setTimer(60);
+            if (result.data.new_bid < i.bid_limit) {
+                setTimer(60);
+            } else {
+                setTimer(0);
+            }
             setCurrentBid(result.data.new_bid);
             axios({
                 method: 'post',
@@ -170,6 +174,42 @@ const ProductCard = ({ i, userID, profile }) => {
     const createCheckOutSession = async () => {
         setBidLevel('');
         setBarTimer(0);
+        let totalWithTaxAndShipping = i.current_bid;
+        let taxes;
+        if (i.sales_tax > 0) {
+            taxes = i.sales_tax * 0.01;
+        } else {
+            taxes = 0;
+        }
+        totalWithTaxAndShipping += totalWithTaxAndShipping * taxes;
+        console.log(totalWithTaxAndShipping);
+        totalWithTaxAndShipping += i.item_shipping;
+        console.log(totalWithTaxAndShipping);
+        let jortsCut;
+        if (i.current_bid <= 20) {
+            jortsCut = parseFloat(i.current_bid * 0.03).toFixed(2);
+        } else if (i.current_bid > 20 && i.current_bid <= 40) {
+            jortsCut = parseFloat(i.current_bid * 0.04).toFixed(2);
+        } else if (i.current_bid > 40 && i.current_bid <= 70) {
+            jortsCut = parseFloat(i.current_bid * 0.05).toFixed(2);
+        } else if (i.current_bid > 70 && i.current_bid <= 100) {
+            jortsCut = parseFloat(i.current_bid * 0.06).toFixed(2);
+        } else if (i.current_bid > 100 && i.current_bid <= 150) {
+            jortsCut = parseFloat(i.current_bid * 0.07).toFixed(2);
+        } else if (i.current_bid > 150 && i.current_bid <= 300) {
+            jortsCut = parseFloat(i.current_bid * 0.08).toFixed(2);
+        } else if (i.current_bid > 300 && i.current_bid <= 1000) {
+            jortsCut = parseFloat(i.current_bid * 0.09).toFixed(2);
+        } else {
+            jortsCut = parseFloat(i.current_bid * 0.10).toFixed(2);
+        }
+        const stripe = await stripePromise;
+        let mediaImage;
+        if (i.medias.length > 0) {
+            mediaImage = i.medias[0].url
+        } else {
+            mediaImage = 'https://jortinc.com/img/jort-logo.png'
+        }
         if (i.bids.length > 0) {
             axios({
                 method: 'post',
@@ -177,12 +217,11 @@ const ProductCard = ({ i, userID, profile }) => {
                 headers: { 'content-type': 'application/json' },
                 data: {
                     '_method': 'PATCH',
-                    'current_bid': i.current_bid,
+                    'current_bid': totalWithTaxAndShipping,
                     'bid_level': 5
                 }
             })
             .then(result => {
-                console.log(result.data)
                 axios({
                     method: 'post',
                     url: 'https://backend.jortinc.com/public/api/winners',
@@ -200,66 +239,21 @@ const ProductCard = ({ i, userID, profile }) => {
             })
             .catch(error => console.log(error.data));
         }
-        let jortsCut;
-        if (i.current_bid <= 15) {
-            jortsCut = parseFloat(i.current_bid * 0.03).toFixed(2);
-        } else if (i.current_bid > 15 && i.current_bid <= 25) {
-            jortsCut = parseFloat(i.current_bid * 0.04).toFixed(2);
-        } else if (i.current_bid > 25 && i.current_bid <= 50) {
-            jortsCut = parseFloat(i.current_bid * 0.05).toFixed(2);
-        } else if (i.current_bid > 50 && i.current_bid <= 75) {
-            jortsCut = parseFloat(i.current_bid * 0.06).toFixed(2);
-        } else if (i.current_bid > 75 && i.current_bid <= 100) {
-            jortsCut = parseFloat(i.current_bid * 0.07).toFixed(2);
-        } else if (i.current_bid > 100 && i.current_bid <= 150) {
-            jortsCut = parseFloat(i.current_bid * 0.08).toFixed(2);
-        } else if (i.current_bid > 150 && i.current_bid <= 200) {
-            jortsCut = parseFloat(i.current_bid * 0.09).toFixed(2);
-        } else if (i.current_bid > 200 && i.current_bid <= 250) {
-            jortsCut = parseFloat(i.current_bid * 0.10).toFixed(2);
-        } else if (i.current_bid > 250 && i.current_bid <= 350) {
-            jortsCut = parseFloat(i.current_bid * 0.11).toFixed(2);
-        } else if (i.current_bid > 350 && i.current_bid <= 450) {
-            jortsCut = parseFloat(i.current_bid * 0.12).toFixed(2);
-        } else if (i.current_bid > 450 && i.current_bid <= 550) {
-            jortsCut = parseFloat(i.current_bid * 0.13).toFixed(2);
-        } else if (i.current_bid > 550 && i.current_bid <= 700) {
-            jortsCut = parseFloat(i.current_bid * 0.14).toFixed(2);
-        } else if (i.current_bid > 700 && i.current_bid <= 850) {
-            jortsCut = parseFloat(i.current_bid * 0.15).toFixed(2);
-        } else if (i.current_bid > 850 && i.current_bid <= 1000) {
-            jortsCut = parseFloat(i.current_bid * 0.16).toFixed(2);
-        } else if (i.current_bid > 1000 && i.current_bid <= 1500) {
-            jortsCut = parseFloat(i.current_bid * 0.17).toFixed(2);
-        } else if (i.current_bid > 1500 && i.current_bid <= 2000) {
-            jortsCut = parseFloat(i.current_bid * 0.18).toFixed(2);
-        } else if (i.current_bid > 2000 && i.current_bid <= 2500) {
-            jortsCut = parseFloat(i.current_bid * 0.19).toFixed(2);
-        } else {
-            jortsCut = parseFloat(i.current_bid * 0.20).toFixed(2);
-        }
-        const stripe = await stripePromise;
-        let mediaImage;
-        if (i.medias.length > 0) {
-            mediaImage = i.medias[0].url
-        } else {
-            mediaImage = 'https://jortinc.com/img/jort-logo.png'
-        }
-        const checkoutSession = await axios.post('https://backend.jortinc.com/public/api/create-stripe-session', {
-            item: {
-                picture: mediaImage,
-                price: Math.ceil(i.current_bid * 100),
-                title: 'JORTinc - ' + i.title,
-            },
-            application_fee: Math.ceil(jortsCut * 100),
-            stripe_id: i.stripeid,
-        });
-        const result = await stripe.redirectToCheckout({
-          sessionId: checkoutSession.data.id,
-        });
-        if (result.error) {
-          alert(result.error.message);
-        }
+        // const checkoutSession = await axios.post('https://backend.jortinc.com/public/api/create-stripe-session', {
+        //     item: {
+        //         picture: mediaImage,
+        //         price: Math.ceil(totalWithTaxesAndShipping * 100),
+        //         title: 'JORTinc - ' + i.title,
+        //     },
+        //     application_fee: Math.ceil(jortsCut * 100),
+        //     stripe_id: i.stripeid,
+        // });
+        // const result = await stripe.redirectToCheckout({
+        //   sessionId: checkoutSession.data.id,
+        // });
+        // if (result.error) {
+        //   alert(result.error.message);
+        // }
     };
     
     return (

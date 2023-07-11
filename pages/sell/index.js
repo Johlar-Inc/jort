@@ -7,6 +7,7 @@ import { ThreeDots } from "react-loader-spinner";
 import { useEffect } from "react";
 import Head from "next/head";
 import Script from "next/script";
+import Link from "next/link";
 
 const Sell = ({ loggedIn, profile, setProfile }) => {
     const router = useRouter();
@@ -16,12 +17,17 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
     const [category, setCategory] = useState('');
     const [startBid, setStartBid] = useState(0);
     const [bidIncrement, setBidIncrement] = useState(0);
+    const [salesTax, setSalesTax] = useState(0);
+    const [shippingState, setShippingState] = useState('');
+    const [limit, setLimit] = useState(0);
+    const [shipping, setShipping] = useState(0.0);
+    const [isDisabled, setIsDisabled] = useState(true);
+    const [tosCheck, setTosCheck] = useState(false);
     const [uploadImage, setUploadImage] = useState('');
     const [itemImages, setItemImages] = useState([]);
     const [showLoader, setShowLoader] = useState(false);
 
     useEffect(() => {
-        console.log(profile)
         if (profile) {
             if (profile.stripeid) {
                 axios({
@@ -38,7 +44,15 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
             }
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+    }, []);
+
+    useEffect(() => {
+        if (tosCheck && prodName && startBid && bidIncrement && shortDesc && shipping && shippingState) {
+            setIsDisabled(false);
+        } else {
+            setIsDisabled(true);
+        }
+    }, [tosCheck, prodName, startBid, bidIncrement, shortDesc, shipping, shippingState]);
 
     const imageUpload = e => {
         let file = e.target.files[0];
@@ -73,6 +87,99 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
 
     const handleProductAdd = () => {
         setShowLoader(true);
+        setIsDisabled(true);
+        switch (shippingState) {
+            case 'AL':
+            case 'GA':
+            case 'NY':
+            case 'WY':
+                setSalesTax(4.00);
+                break;
+            case 'AZ':
+                setSalesTax(5.60);
+                break;
+            case 'AK':
+            case 'KS':
+            case 'WA':
+                setSalesTax(6.50);
+                break;
+            case 'CA':
+                setSalesTax(7.25);
+                break;
+            case 'CO':
+                setSalesTax(2.90);
+                break;
+            case 'CT':
+                setSalesTax(6.35);
+                break;
+            case 'DC':
+            case 'FL':
+            case 'ID':
+            case 'IA':
+            case 'KY':
+            case 'MD':
+            case 'MI':
+            case 'PA':
+            case 'SC':
+            case 'VT':
+            case 'WV':
+                setSalesTax(6.00);
+                break;
+            case 'IL':
+            case 'MA':
+            case 'TX':
+                setSalesTax(6.25);
+                break;
+            case 'IN':
+            case 'MS':
+            case 'RI':
+            case 'TN':
+                setSalesTax(7.00);
+                break;
+            case 'LA':
+                setSalesTax(4.45);
+                break;
+            case 'ME':
+            case 'NE':
+                setSalesTax(5.50);
+                break;
+            case 'MN':
+                setSalesTax(6.88);
+                break;
+            case 'MO':
+                setSalesTax(4.23);
+                break;
+            case 'NV':
+                setSalesTax(6.85);
+                break;
+            case 'NJ':
+                setSalesTax(6.63);
+                break;
+            case 'NM':
+            case 'ND':
+            case 'WI':
+                setSalesTax(5.00);
+                break;
+            case 'NC':
+                setSalesTax(4.75);
+                break;
+            case 'OH':
+                setSalesTax(5.75);
+                break;
+            case 'OK':
+            case 'SD':
+                setSalesTax(4.50);
+                break;
+            case 'UT':
+                setSalesTax(6.10);
+                break;
+            case 'VA':
+                setSalesTax(5.30);
+                break;
+            default:
+                setSalesTax(0)
+                break;
+        }
         setTimeout(() => {
             axios({
                 method: 'post',
@@ -87,6 +194,9 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                     'current_bid': startBid,
                     'increment': bidIncrement,
                     'new_bid': startBid,
+                    'bid_limit': limit,
+                    'item_shipping': shipping,
+                    'sales_tax': salesTax,
                     'stripeid': profile.stripeid,
                 }
             })
@@ -241,6 +351,75 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                                             <span className="input-group-text">.00</span>
                                         </div>
                                     </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="bidLimit" className="form-label">Bid Limit (in US dollars)</label>
+                                        <div className="input-group">
+                                            <span className="input-group-text">$</span>
+                                            <input type="text" name="bidLimit" id="bidLimit" className="form-control" required value={limit} onChange={e => setLimit(e.target.value)} />
+                                            <span className="input-group-text">.00</span>
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="shipping" className="form-label">Amount Needed for Shipping (in US dollars)</label>
+                                        <div className="input-group">
+                                            <span className="input-group-text">$</span>
+                                            <input type="number" name="shipping" id="shipping" className="form-control" required value={shipping} onChange={e => setShipping(e.target.value)} />
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="state" className="form-label">From Which State Will This Item Be Sold? (Select a state; at this time JORT only supports shipping from the continental 48 United States)</label>
+                                        <select className="form-select form-select-lg" value={shippingState} onChange={e => setShippingState(e.target.value)}>
+                                            <option value="AL">Alabama</option>
+                                            <option value="AZ">Arizona</option>
+                                            <option value="AR">Arkansas</option>
+                                            <option value="CA">California</option>
+                                            <option value="CO">Colorado</option>
+                                            <option value="CT">Connecticut</option>
+                                            <option value="DE">Delaware</option>
+                                            <option value="DC">District of Columbia</option>
+                                            <option value="FL">Florida</option>
+                                            <option value="GA">Georgia</option>
+                                            <option value="ID">Idaho</option>
+                                            <option value="IL">Illinois</option>
+                                            <option value="IN">Indiana</option>
+                                            <option value="IA">Iowa</option>
+                                            <option value="KS">Kansas</option>
+                                            <option value="KY">Kentucky</option>
+                                            <option value="LA">Louisiana</option>
+                                            <option value="ME">Maine</option>
+                                            <option value="MD">Maryland</option>
+                                            <option value="MA">Massachusetts</option>
+                                            <option value="MI">Michigan</option>
+                                            <option value="MN">Minnesota</option>
+                                            <option value="MS">Mississippi</option>
+                                            <option value="MO">Missouri</option>
+                                            <option value="MT">Montana</option>
+                                            <option value="NE">Nebraska</option>
+                                            <option value="NV">Nevada</option>
+                                            <option value="NH">New Hampshire</option>
+                                            <option value="NJ">New Jersey</option>
+                                            <option value="NM">New Mexico</option>
+                                            <option value="NY">New York</option>
+                                            <option value="NC">North Carolina</option>
+                                            <option value="ND">North Dakota</option>
+                                            <option value="OH">Ohio</option>
+                                            <option value="OK">Oklahoma</option>
+                                            <option value="OR">Oregon</option>
+                                            <option value="PA">Pennsylvania</option>
+                                            <option value="RI">Rhode Island</option>
+                                            <option value="SC">South Carolina</option>
+                                            <option value="SD">South Dakota</option>
+                                            <option value="TN">Tennessee</option>
+                                            <option value="TX">Texas</option>
+                                            <option value="UT">Utah</option>
+                                            <option value="VT">Vermont</option>
+                                            <option value="VA">Virginia</option>
+                                            <option value="WA">Washington</option>
+                                            <option value="WV">West Virginia</option>
+                                            <option value="WI">Wisconsin</option>
+                                            <option value="WY">Wyoming</option>
+                                        </select>
+                                    </div>
                                     <div className="container">
                                         <div className="row mb-3">
                                             {itemImages.map(i => (
@@ -257,8 +436,14 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="form-check mb-3">
+                                        <input className="form-check-input" type="checkbox" id="tosconfirm" value={tosCheck} onChange={e => setTosCheck(e.target.checked)} />
+                                        <label className="form-check-label" htmlFor="tosconfirm">
+                                            By checking this box, you agree to the JORT Seller&rsquo;s <Link href="/terms">Terms of Service</Link>.
+                                        </label>
+                                    </div>
                                     <div className="mb-3">
-                                        <button type="button" className="btn btn-primary" onClick={() => handleProductAdd()}>Submit</button>
+                                        <button type="button" className="btn btn-primary" disabled={isDisabled} onClick={() => handleProductAdd()}>Submit</button>
                                     </div>
                                 </>
                             ) : (
