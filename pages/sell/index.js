@@ -3,7 +3,6 @@ import { useState } from "react";
 import axios from "axios";
 import swal from "sweetalert";
 import { useRouter } from 'next/router';
-import { ThreeDots } from "react-loader-spinner";
 import { useEffect } from "react";
 import Head from "next/head";
 import Script from "next/script";
@@ -11,6 +10,7 @@ import Link from "next/link";
 
 const Sell = ({ loggedIn, profile, setProfile }) => {
     const router = useRouter();
+    const [stripeEnabled, setStripeEnabled] = useState(false);
     const [prodName, setProdName] = useState('');
     const [shortDesc, setShortDesc] = useState('');
     const [longDesc, setLongDesc] = useState('');
@@ -18,14 +18,12 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
     const [startBid, setStartBid] = useState(0);
     const [bidIncrement, setBidIncrement] = useState(0);
     const [salesTax, setSalesTax] = useState(0);
-    const [shippingState, setShippingState] = useState('');
     const [limit, setLimit] = useState(0);
     const [shipping, setShipping] = useState(0.0);
     const [isDisabled, setIsDisabled] = useState(true);
     const [tosCheck, setTosCheck] = useState(false);
     const [uploadImage, setUploadImage] = useState('');
     const [itemImages, setItemImages] = useState([]);
-    const [showLoader, setShowLoader] = useState(false);
 
     useEffect(() => {
         if (profile) {
@@ -38,21 +36,24 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                     }
                 })
                 .then(result => {
-                    console.log(result);
+                    if (result.data.capabilities.transfers === 'active') {
+                        setStripeEnabled(true);
+                    } else {
+                        setStripeEnabled(false);
+                    }
                 })
                 .catch(error => console.log(error.data));
             }
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [profile]);
 
     useEffect(() => {
-        if (tosCheck && prodName && startBid && bidIncrement && shortDesc && shipping && shippingState) {
+        if (tosCheck && prodName && startBid && bidIncrement && shortDesc && longDesc) {
             setIsDisabled(false);
         } else {
             setIsDisabled(true);
         }
-    }, [tosCheck, prodName, startBid, bidIncrement, shortDesc, shipping, shippingState]);
+    }, [tosCheck, prodName, startBid, bidIncrement, shortDesc, longDesc]);
 
     const imageUpload = e => {
         let file = e.target.files[0];
@@ -70,6 +71,7 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
     const fileUpload = e => {
         e.preventDefault();
         let imageItem = {};
+        swal("Your image is being uploaded. Please stand by.")
         axios({
             method: 'post',
             url: 'https://backend.jortinc.com/public/api/files',
@@ -86,100 +88,8 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
     }
 
     const handleProductAdd = () => {
-        setShowLoader(true);
         setIsDisabled(true);
-        switch (shippingState) {
-            case 'AL':
-            case 'GA':
-            case 'NY':
-            case 'WY':
-                setSalesTax(4.00);
-                break;
-            case 'AZ':
-                setSalesTax(5.60);
-                break;
-            case 'AK':
-            case 'KS':
-            case 'WA':
-                setSalesTax(6.50);
-                break;
-            case 'CA':
-                setSalesTax(7.25);
-                break;
-            case 'CO':
-                setSalesTax(2.90);
-                break;
-            case 'CT':
-                setSalesTax(6.35);
-                break;
-            case 'DC':
-            case 'FL':
-            case 'ID':
-            case 'IA':
-            case 'KY':
-            case 'MD':
-            case 'MI':
-            case 'PA':
-            case 'SC':
-            case 'VT':
-            case 'WV':
-                setSalesTax(6.00);
-                break;
-            case 'IL':
-            case 'MA':
-            case 'TX':
-                setSalesTax(6.25);
-                break;
-            case 'IN':
-            case 'MS':
-            case 'RI':
-            case 'TN':
-                setSalesTax(7.00);
-                break;
-            case 'LA':
-                setSalesTax(4.45);
-                break;
-            case 'ME':
-            case 'NE':
-                setSalesTax(5.50);
-                break;
-            case 'MN':
-                setSalesTax(6.88);
-                break;
-            case 'MO':
-                setSalesTax(4.23);
-                break;
-            case 'NV':
-                setSalesTax(6.85);
-                break;
-            case 'NJ':
-                setSalesTax(6.63);
-                break;
-            case 'NM':
-            case 'ND':
-            case 'WI':
-                setSalesTax(5.00);
-                break;
-            case 'NC':
-                setSalesTax(4.75);
-                break;
-            case 'OH':
-                setSalesTax(5.75);
-                break;
-            case 'OK':
-            case 'SD':
-                setSalesTax(4.50);
-                break;
-            case 'UT':
-                setSalesTax(6.10);
-                break;
-            case 'VA':
-                setSalesTax(5.30);
-                break;
-            default:
-                setSalesTax(0)
-                break;
-        }
+        swal("Your item is being processed. Please stand by.")
         setTimeout(() => {
             axios({
                 method: 'post',
@@ -197,6 +107,7 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                     'bid_limit': limit,
                     'item_shipping': shipping,
                     'sales_tax': salesTax,
+                    'email': profile.email,
                     'stripeid': profile.stripeid,
                 }
             })
@@ -213,15 +124,19 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                             }
                         })
                         .then(result => {
-                            swal("Success!", "Your item has been added. Redirecting you to the bidding floor now.", "success");
-                            router.push('/bid');
+                            console.log(result.data);
                         })
-                        .catch(error => swal("Uh oh! Something went wrong. Please try again."));
+                        .catch(error => {
+                            swal("Uh oh! Something went wrong. Please try again.")
+                        })
                     }
-                    setShowLoader(false);
+                    swal("Success!", "Your item has been added. Redirecting you to the bidding floor now.", "success");
+                    router.push('/bid');
                 }, 3500);
             })
-            .catch(error => swal("Uh oh! Something went wrong. Please try again."));
+            .catch(error => {
+                swal("Uh oh! Something went wrong. Please try again.")
+            });
         }, 5500)
     }
 
@@ -296,20 +211,10 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                 }}
             />
             <div className="container">
-                <ThreeDots 
-                    height="300" 
-                    width="500" 
-                    radius="9"
-                    color="#993300" 
-                    ariaLabel="three-dots-loading"
-                    wrapperStyle={{ position: 'absolute', bottom: 50, left: '35%', zIndex: 999 }}
-                    wrapperClassName="position-absolute top-50 start-50 translate-middle"
-                    visible={showLoader}
-                />
                 <div className="row mx-0 justify-content-center">
                     {loggedIn ? (
                         <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
-                            {profile.stripeid ? (
+                            {stripeEnabled ? (
                                 <>
                                     <h2>Sell</h2>
                                     <div className="mb-3">
@@ -368,56 +273,56 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                                     </div>
                                     <div className="mb-3">
                                         <label htmlFor="state" className="form-label">From Which State Will This Item Be Sold? (Select a state; at this time JORT only supports shipping from the continental 48 United States)</label>
-                                        <select className="form-select form-select-lg" value={shippingState} onChange={e => setShippingState(e.target.value)}>
-                                            <option value="AL">Alabama</option>
-                                            <option value="AZ">Arizona</option>
-                                            <option value="AR">Arkansas</option>
-                                            <option value="CA">California</option>
-                                            <option value="CO">Colorado</option>
-                                            <option value="CT">Connecticut</option>
-                                            <option value="DE">Delaware</option>
-                                            <option value="DC">District of Columbia</option>
-                                            <option value="FL">Florida</option>
-                                            <option value="GA">Georgia</option>
-                                            <option value="ID">Idaho</option>
-                                            <option value="IL">Illinois</option>
-                                            <option value="IN">Indiana</option>
-                                            <option value="IA">Iowa</option>
-                                            <option value="KS">Kansas</option>
-                                            <option value="KY">Kentucky</option>
-                                            <option value="LA">Louisiana</option>
-                                            <option value="ME">Maine</option>
-                                            <option value="MD">Maryland</option>
-                                            <option value="MA">Massachusetts</option>
-                                            <option value="MI">Michigan</option>
-                                            <option value="MN">Minnesota</option>
-                                            <option value="MS">Mississippi</option>
-                                            <option value="MO">Missouri</option>
-                                            <option value="MT">Montana</option>
-                                            <option value="NE">Nebraska</option>
-                                            <option value="NV">Nevada</option>
-                                            <option value="NH">New Hampshire</option>
-                                            <option value="NJ">New Jersey</option>
-                                            <option value="NM">New Mexico</option>
-                                            <option value="NY">New York</option>
-                                            <option value="NC">North Carolina</option>
-                                            <option value="ND">North Dakota</option>
-                                            <option value="OH">Ohio</option>
-                                            <option value="OK">Oklahoma</option>
-                                            <option value="OR">Oregon</option>
-                                            <option value="PA">Pennsylvania</option>
-                                            <option value="RI">Rhode Island</option>
-                                            <option value="SC">South Carolina</option>
-                                            <option value="SD">South Dakota</option>
-                                            <option value="TN">Tennessee</option>
-                                            <option value="TX">Texas</option>
-                                            <option value="UT">Utah</option>
-                                            <option value="VT">Vermont</option>
-                                            <option value="VA">Virginia</option>
-                                            <option value="WA">Washington</option>
-                                            <option value="WV">West Virginia</option>
-                                            <option value="WI">Wisconsin</option>
-                                            <option value="WY">Wyoming</option>
+                                        <select className="form-select form-select-lg" defaultValue={'0.00'} onChange={e => setSalesTax(e.target.value)}>
+                                            <option value="4.00">Alabama</option>
+                                            <option value="5.60">Arizona</option>
+                                            <option value="6.50">Arkansas</option>
+                                            <option value="7.25">California</option>
+                                            <option value="2.90">Colorado</option>
+                                            <option value="6.35">Connecticut</option>
+                                            <option value="0.00">Delaware</option>
+                                            <option value="6.00">District of Columbia</option>
+                                            <option value="6.00">Florida</option>
+                                            <option value="4.00">Georgia</option>
+                                            <option value="6.00">Idaho</option>
+                                            <option value="6.25">Illinois</option>
+                                            <option value="7.00">Indiana</option>
+                                            <option value="6.00">Iowa</option>
+                                            <option value="6.50">Kansas</option>
+                                            <option value="6.00">Kentucky</option>
+                                            <option value="4.45">Louisiana</option>
+                                            <option value="5.50">Maine</option>
+                                            <option value="6.00">Maryland</option>
+                                            <option value="6.25">Massachusetts</option>
+                                            <option value="6.00">Michigan</option>
+                                            <option value="6.88">Minnesota</option>
+                                            <option value="7.00">Mississippi</option>
+                                            <option value="4.23">Missouri</option>
+                                            <option value="0.00">Montana</option>
+                                            <option value="5.50">Nebraska</option>
+                                            <option value="6.85">Nevada</option>
+                                            <option value="0.00">New Hampshire</option>
+                                            <option value="6.63">New Jersey</option>
+                                            <option value="5.00">New Mexico</option>
+                                            <option value="4.00">New York</option>
+                                            <option value="4.75">North Carolina</option>
+                                            <option value="5.00">North Dakota</option>
+                                            <option value="5.75">Ohio</option>
+                                            <option value="4.50">Oklahoma</option>
+                                            <option value="0.00">Oregon</option>
+                                            <option value="6.00">Pennsylvania</option>
+                                            <option value="7.00">Rhode Island</option>
+                                            <option value="6.00">South Carolina</option>
+                                            <option value="4.50">South Dakota</option>
+                                            <option value="7.00">Tennessee</option>
+                                            <option value="6.25">Texas</option>
+                                            <option value="6.10">Utah</option>
+                                            <option value="6.00">Vermont</option>
+                                            <option value="5.30">Virginia</option>
+                                            <option value="6.50">Washington</option>
+                                            <option value="6.00">West Virginia</option>
+                                            <option value="5.00">Wisconsin</option>
+                                            <option value="4.00">Wyoming</option>
                                         </select>
                                     </div>
                                     <div className="container">
@@ -443,11 +348,11 @@ const Sell = ({ loggedIn, profile, setProfile }) => {
                                         </label>
                                     </div>
                                     <div className="mb-3">
-                                        <button type="button" className="btn btn-primary" disabled={isDisabled} onClick={() => handleProductAdd()}>Submit</button>
+                                        <button type="button" className={`btn btn-primary ${isDisabled ? 'disabled' : ''}`} onClick={() => handleProductAdd()}>Submit</button>
                                     </div>
                                 </>
                             ) : (
-                                <button onClick={() => fetchClientSecret()}>Please click here to connect to Stripe</button>
+                                <button onClick={() => fetchClientSecret()}>Our records show that you are either not set up through Stripe or have not completed the onboarding process. Please click here to connect to Stripe to complete the onboarding process.</button>
                             )}
                         </div>
                     ) : (

@@ -18,6 +18,7 @@ const ProductCard = ({ i, userID, profile }) => {
     const [currentBid, setCurrentBid] = useState();
     const [currentTime, setCurrentTime] = useState();
     const [sixHourWindow, setSixHourWindow] = useState();
+    const [timesUp, setTimesUp] = useState(false);
 
     useEffect(() => {
         let sixHours = new Date(i.pre_timer).toLocaleString();
@@ -28,10 +29,13 @@ const ProductCard = ({ i, userID, profile }) => {
     useEffect(() => {
         if (preHours === 0 && (preMins < 20 && preMins > 0)) {
             if (i.bids.length > 0) {
-                const distinct = (value, index, self) => {
-                    return self.indexOf(value) === index;
-                }
-                const bidEmails = i.bids.filter(distinct);
+                let bidEmails = [];
+                i.bids.forEach((c) => {
+                    if (!bidEmails.includes(c)) {
+                        bidEmails.push(c);
+                    }
+                });
+                console.log(bidEmails);
                 for (let b = 0; b < bidEmails.length; b++) {
                     axios({
                         method: 'post',
@@ -70,8 +74,8 @@ const ProductCard = ({ i, userID, profile }) => {
 
             if (sixHourWindow > currentTime) {
                 let preTimer = Math.abs(sixHourWindow - currentTime) / 1000;
-                let seconds = Math.ceil(preTimer) % 60;
-                let minutes = Math.ceil(preTimer / 60) % 60;
+                let seconds = Math.floor(preTimer) % 60;
+                let minutes = Math.floor(preTimer / 60) % 60;
                 if (seconds < 10) {
                     setPreSecs("0" + seconds);
                 } else {
@@ -79,9 +83,9 @@ const ProductCard = ({ i, userID, profile }) => {
                 }
                 if (seconds === 0) {
                     if (minutes < 10) {
-                        setPreMins(("0" + minutes) + 1);
+                        setPreMins(("0" + minutes));
                     } else {
-                        setPreMins(minutes + 1);
+                        setPreMins(minutes);
                     }
                 } else {
                     if (minutes < 10) {
@@ -110,13 +114,8 @@ const ProductCard = ({ i, userID, profile }) => {
                         }
                     } else {
                         setTimer(0);
-                        setTimeout(() => {
-                            if (i.bids.length > 0) {
-                                if (userID === i.bids[i.bids.length - 1].user_id) {
-                                    createCheckOutSession()
-                                }
-                            }
-                        }, 1500);
+                        setBarTimer(0);
+                        setTimesUp(true);
                     }
                 }
             }
@@ -125,9 +124,77 @@ const ProductCard = ({ i, userID, profile }) => {
             setBarWidth(Math.ceil((barTimer / 15) * 100));
         }
         return () => clearInterval(intervalId);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [i.bids, timer, preHours, preMins, preSecs, countdown, currentTime]);
+
+    useEffect(() => {
+        if (timesUp) {
+            setTimeout(() => {
+                setBidLevel('');
+                setBarTimer(0);
+                let totalWithTaxAndShipping = i.current_bid;
+                let taxes;
+                if (i.sales_tax > 0) {
+                    taxes = i.sales_tax * 0.01;
+                } else {
+                    taxes = 0;
+                }
+                totalWithTaxAndShipping += totalWithTaxAndShipping * taxes;
+                totalWithTaxAndShipping += i.item_shipping;
+                let jortsCut;
+                if (i.current_bid <= 20) {
+                    jortsCut = parseFloat(i.current_bid * 0.03).toFixed(2);
+                } else if (i.current_bid > 20 && i.current_bid <= 40) {
+                    jortsCut = parseFloat(i.current_bid * 0.04).toFixed(2);
+                } else if (i.current_bid > 40 && i.current_bid <= 70) {
+                    jortsCut = parseFloat(i.current_bid * 0.05).toFixed(2);
+                } else if (i.current_bid > 70 && i.current_bid <= 100) {
+                    jortsCut = parseFloat(i.current_bid * 0.06).toFixed(2);
+                } else if (i.current_bid > 100 && i.current_bid <= 150) {
+                    jortsCut = parseFloat(i.current_bid * 0.07).toFixed(2);
+                } else if (i.current_bid > 150 && i.current_bid <= 300) {
+                    jortsCut = parseFloat(i.current_bid * 0.08).toFixed(2);
+                } else if (i.current_bid > 300 && i.current_bid <= 1000) {
+                    jortsCut = parseFloat(i.current_bid * 0.09).toFixed(2);
+                } else {
+                    jortsCut = parseFloat(i.current_bid * 0.10).toFixed(2);
+                }
+                if (i.bids.length > 0) {
+                    axios({
+                        method: 'post',
+                        url: `https://backend.jortinc.com/public/api/products/${i.id}`,
+                        headers: { 'content-type': 'application/json' },
+                        data: {
+                            '_method': 'PATCH',
+                            'current_bid': totalWithTaxAndShipping,
+                            'bid_level': 5
+                        }
+                    })
+                    .then(result => {
+                        axios({
+                            method: 'post',
+                            url: 'https://backend.jortinc.com/public/api/winners',
+                            headers: { 'content-type': 'application/json' },
+                            data: {
+                                'product_id': i.id,
+                                'user_id': i.bids[i.bids.length - 1].user_id,
+                                'payment_status': 'pending'
+                            }
+                        })
+                        .then(res => {
+                            console.log(res.data)
+                        })
+                        .catch(error => console.log(error.data))
+                    })
+                    .catch(error => console.log(error.data));
+                }
+                if (userID === i.bids[i.bids.length - 1].user_id) {
+                    createCheckOutSession(totalWithTaxAndShipping, jortsCut);
+                }
+            }, 1500);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [timesUp, i.current_bid, timer]);
 
     useEffect(() => {
         setCurrentBid(i.new_bid);
@@ -171,38 +238,7 @@ const ProductCard = ({ i, userID, profile }) => {
         })
     }
 
-    const createCheckOutSession = async () => {
-        setBidLevel('');
-        setBarTimer(0);
-        let totalWithTaxAndShipping = i.current_bid;
-        let taxes;
-        if (i.sales_tax > 0) {
-            taxes = i.sales_tax * 0.01;
-        } else {
-            taxes = 0;
-        }
-        totalWithTaxAndShipping += totalWithTaxAndShipping * taxes;
-        console.log(totalWithTaxAndShipping);
-        totalWithTaxAndShipping += i.item_shipping;
-        console.log(totalWithTaxAndShipping);
-        let jortsCut;
-        if (i.current_bid <= 20) {
-            jortsCut = parseFloat(i.current_bid * 0.03).toFixed(2);
-        } else if (i.current_bid > 20 && i.current_bid <= 40) {
-            jortsCut = parseFloat(i.current_bid * 0.04).toFixed(2);
-        } else if (i.current_bid > 40 && i.current_bid <= 70) {
-            jortsCut = parseFloat(i.current_bid * 0.05).toFixed(2);
-        } else if (i.current_bid > 70 && i.current_bid <= 100) {
-            jortsCut = parseFloat(i.current_bid * 0.06).toFixed(2);
-        } else if (i.current_bid > 100 && i.current_bid <= 150) {
-            jortsCut = parseFloat(i.current_bid * 0.07).toFixed(2);
-        } else if (i.current_bid > 150 && i.current_bid <= 300) {
-            jortsCut = parseFloat(i.current_bid * 0.08).toFixed(2);
-        } else if (i.current_bid > 300 && i.current_bid <= 1000) {
-            jortsCut = parseFloat(i.current_bid * 0.09).toFixed(2);
-        } else {
-            jortsCut = parseFloat(i.current_bid * 0.10).toFixed(2);
-        }
+    const createCheckOutSession = async (total, cut) => {
         const stripe = await stripePromise;
         let mediaImage;
         if (i.medias.length > 0) {
@@ -210,50 +246,24 @@ const ProductCard = ({ i, userID, profile }) => {
         } else {
             mediaImage = 'https://jortinc.com/img/jort-logo.png'
         }
-        if (i.bids.length > 0) {
-            axios({
-                method: 'post',
-                url: `https://backend.jortinc.com/public/api/products/${i.id}`,
-                headers: { 'content-type': 'application/json' },
-                data: {
-                    '_method': 'PATCH',
-                    'current_bid': totalWithTaxAndShipping,
-                    'bid_level': 5
-                }
-            })
-            .then(result => {
-                axios({
-                    method: 'post',
-                    url: 'https://backend.jortinc.com/public/api/winners',
-                    headers: { 'content-type': 'application/json' },
-                    data: {
-                        'product_id': i.id,
-                        'user_id': i.bids[i.bids.length - 1].user_id,
-                        'payment_status': 'pending'
-                    }
-                })
-                .then(res => {
-                    console.log(res.data)
-                })
-                .catch(error => console.log(error.data))
-            })
-            .catch(error => console.log(error.data));
+        const checkoutSession = await axios.post('https://backend.jortinc.com/public/api/create-stripe-session', {
+            item: {
+                picture: mediaImage,
+                price: Math.ceil(total * 100),
+                title: 'JORTinc - ' + i.title,
+            },
+            application_fee: Math.ceil(cut * 100),
+            stripe_id: i.stripeid,
+        });
+        if (checkoutSession.error) {
+            console.log(checkoutSession.error.data)
         }
-        // const checkoutSession = await axios.post('https://backend.jortinc.com/public/api/create-stripe-session', {
-        //     item: {
-        //         picture: mediaImage,
-        //         price: Math.ceil(totalWithTaxesAndShipping * 100),
-        //         title: 'JORTinc - ' + i.title,
-        //     },
-        //     application_fee: Math.ceil(jortsCut * 100),
-        //     stripe_id: i.stripeid,
-        // });
-        // const result = await stripe.redirectToCheckout({
-        //   sessionId: checkoutSession.data.id,
-        // });
-        // if (result.error) {
-        //   alert(result.error.message);
-        // }
+        const result = await stripe.redirectToCheckout({
+          sessionId: checkoutSession.data.id,
+        });
+        if (result.error) {
+          alert(result.error.message);
+        }
     };
     
     return (
