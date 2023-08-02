@@ -37,7 +37,7 @@ const SellerTutorial = () => {
                 `,
                 }}
             />
-            <div className="container">
+            <div className="container mb-3 pb-3">
                 <div className="row">
                     <div className="col-12">
                         <h2 className="display-2">JORTinc Tutorial for Sellers</h2>

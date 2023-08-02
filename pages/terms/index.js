@@ -126,7 +126,7 @@ const TermsOfService = ({ setProfile, profile }) => {
                         <p>A full list of the Stripe end user terms of service can be found <a href="https://stripe.com/legal/end-users" target="_blank" rel="noreferrer">here.</a></p>
                         <p>A Stripe Services Agreement can be found <a href="https://stripe.com/legal/ssa" target="_blank" rel="noreferrer">here.</a></p>
                         <p>A Stripe Connected account is required to sell items on this site, as we would be unable to pay the seller without one.</p>
-                        <p>We want to make this experience for you as much fun and carefree as possible, Any and all issues please bring it to our attention. We cannot fix something we don&rsquo;t know is broken, remember here at JORT inc we do not own any merchandise we are jus a avenue to be able to buy and sell as well as have services on or site.</p>
+                        <p>We want to make this experience for you as much fun and carefree as possible, Any and all issues please bring it to our attention <a href="mailto:contact@jortinc.com">by contacting us</a>. We cannot fix something we don&rsquo;t know is broken, remember here at JORT inc we do not own any merchandise we are just an avenue to be able to buy and sell as well as have services on our site.</p>
                     </div>
                 </div>
             </div>

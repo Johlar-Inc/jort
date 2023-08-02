@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import Script from "next/script";
 
 const CommissionTutorial = () => {
@@ -37,7 +38,7 @@ const CommissionTutorial = () => {
                 `,
                 }}
             />
-            <div className="container">
+            <div className="container mb-3 pb-3">
                 <div className="row">
                     <div className="col-12">
                         <h2 className="display-2">Commission Base for JORTinc.com</h2>
@@ -53,7 +54,7 @@ const CommissionTutorial = () => {
                             <li className="list-group-item">9%-$300.01 to $1000.00</li>
                             <li className="list-group-item">10%-$1000.01 and up</li>
                         </ul>
-                        <p>We are going to max out at 10% commission so anything above $1000.00 is going to be charged the 10% commission fee. I think that is fair for all parties to be considered. Now as mentioned in the terms this will be part of the terms as well. The commission will be taken out before any bank and shipping fees are taken out.</p>
+                        <p>We are going to max out at 10% commission so anything above $1000.00 is going to be charged the 10% commission fee. I think that is fair for all parties to be considered. Now as mentioned in the terms this will be part of the terms as well. The commission will be taken out before any bank and shipping fees are taken out. However, Stripe also takes a small percentage out for their processing fee. Please see the Stripe terms of service located on our <Link href="/terms">Terms of Service</Link> page.</p>
                     </div>
                 </div>
             </div>

@@ -141,6 +141,7 @@ const ProductCard = ({ i, userID, profile }) => {
                 }
                 totalWithTaxAndShipping += totalWithTaxAndShipping * taxes;
                 totalWithTaxAndShipping += i.item_shipping;
+                const stripeFee = (parseFloat(i.current_bid * 0.029).toFixed(2)) + 0.3;
                 let jortsCut;
                 if (i.current_bid <= 20) {
                     jortsCut = parseFloat(i.current_bid * 0.03).toFixed(2);
@@ -189,7 +190,7 @@ const ProductCard = ({ i, userID, profile }) => {
                     .catch(error => console.log(error.data));
                 }
                 if (userID === i.bids[i.bids.length - 1].user_id) {
-                    createCheckOutSession(totalWithTaxAndShipping, jortsCut);
+                    createCheckOutSession(totalWithTaxAndShipping, jortsCut, stripeFee);
                 }
             }, 1500);
         }
@@ -238,7 +239,7 @@ const ProductCard = ({ i, userID, profile }) => {
         })
     }
 
-    const createCheckOutSession = async (total, cut) => {
+    const createCheckOutSession = async (total, cut, fee) => {
         const stripe = await stripePromise;
         let mediaImage;
         if (i.medias.length > 0) {
@@ -252,8 +253,9 @@ const ProductCard = ({ i, userID, profile }) => {
                 price: Math.ceil(total * 100),
                 title: 'JORTinc - ' + i.title,
             },
-            application_fee: Math.ceil(cut * 100),
+            application_fee: Math.ceil((cut + fee) * 100),
             stripe_id: i.stripeid,
+            item_id: i.id,
         });
         if (checkoutSession.error) {
             console.log(checkoutSession.error.data)

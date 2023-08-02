@@ -5,10 +5,12 @@ import swal from 'sweetalert';
 import ProductCard from '../../components/ProductCard';
 import Head from 'next/head';
 import Script from 'next/script';
+import { useRouter } from "next/router";
 
 const Bid = ({ loggedIn, profile }) => {
   const [userID, setUserID] = useState();
   const [products, setProducts] = useState([]);
+  const r = useRouter();
 
   useEffect(() => {
     async function fetchData() {
@@ -23,6 +25,19 @@ const Bid = ({ loggedIn, profile }) => {
 
     if (profile) setUserID(profile.id);
   }, [products, profile]);
+
+  useEffect(() => {
+    if (r.query?.successPay) {
+      async function notifySeller() {
+        await axios(
+          `https://backend.jortinc.com/public/api/winners/items/${r.query?.paidItem}`
+        );
+      }
+
+      notifySeller();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleTooltipClick = (item) => {
     swal(

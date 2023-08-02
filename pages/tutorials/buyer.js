@@ -37,7 +37,7 @@ const BuyerTutorial = () => {
                 `,
                 }}
             />
-            <div className="container-fluid px-0">
+            <div className="container-fluid px-0 mb-3 pb-3">
                 <div className="row mx-0">
                     <div className="col-12 px-0">
                         <div className="container">

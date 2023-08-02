@@ -45,6 +45,9 @@ const Header = ({ loggedIn, profile }) => {
                                 </li>
                             </>
                         )}
+                        <li className="nav-item px-1">
+                            <a href="mailto:contact@jortinc.com" className="nav-link">Contact Us</a>
+                        </li>
                     </ul>
                 </div>
             </div>
