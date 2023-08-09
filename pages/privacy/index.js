@@ -39,7 +39,7 @@ const PrivacyPolicy = () => {
             />
             <div className="container">
                 <div className="row">
-                    <div className="col-12">
+                    <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded bg-white">
                         <h2 className="display-2">Your Privacy is Important to Us</h2>
                         <p>This privacy notice discloses the privacy practices for Junk or Treasures, Johlar Inc., our partner websites and any businesses we are associated with. This privacy notice applies solely to information collected by this website. It will notify you of the following:</p>
                         <ul className="list-group list-group-flush">

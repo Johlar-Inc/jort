@@ -87,7 +87,7 @@ const Bid = ({ loggedIn, profile }) => {
         />
         <div className="container">
           <div className="row mx-0 justify-content-center">
-            <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
+            <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded bg-white">
               <h2>Welcome to the Bidding Floor</h2>
               <div className="container">
                 <div className="row justify-content-center">

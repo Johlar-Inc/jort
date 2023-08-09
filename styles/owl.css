@@ -1,3 +1,25 @@
 .full-screen {
     min-height: 85vh;
 }
+
+body {
+    height: 100%;
+    background: rgb(204,224,244);
+    background: linear-gradient(180deg, rgba(204,224,244,1) 0%, rgba(30,156,215,1) 20%, rgba(0,121,190,1) 45%, rgba(0,91,151,1) 74%, rgba(241,210,142,1) 75%, rgba(178,141,79,1) 100%);
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center top;
+    background-attachment: fixed;
+}
+
+.footer {
+    background-color: #b28d4f !important;
+}
+
+.header {
+    background-color: rgba(204,224,244,1) !important;
+}
+
+.shadowed-text {
+    text-shadow: 0px 0px 6px rgba(0,0,0,0.6);
+}

@@ -9,7 +9,7 @@ const Header = ({ loggedIn, profile }) => {
     }
 
     return (
-        <nav className="navbar navbar-expand-lg bg-light sticky-top border-bottom border-primary">
+        <nav className="header navbar navbar-expand-lg bg-light sticky-top border-bottom border-primary">
             <div className="container">
                 <Link href="/" className="navbar-brand">
                     <h3>

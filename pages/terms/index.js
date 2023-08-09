@@ -74,7 +74,7 @@ const TermsOfService = ({ setProfile, profile }) => {
             />
             <div className="container">
                 <div className="row">
-                    <div className="col-12">
+                    <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded bg-white">
                         <h2 className="display-2">JORT Terms of Service</h2>
                         <h4 className="display-3">Buyers Terms</h4>
                         <ol>

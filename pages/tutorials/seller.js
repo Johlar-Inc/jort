@@ -39,7 +39,7 @@ const SellerTutorial = () => {
             />
             <div className="container mb-3 pb-3">
                 <div className="row">
-                    <div className="col-12">
+                    <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded bg-white">
                         <h2 className="display-2">JORTinc Tutorial for Sellers</h2>
                         <ol>
                             <li>Choose item to post for sale.</li>

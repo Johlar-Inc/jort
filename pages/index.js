@@ -71,10 +71,10 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
                 `,
                 }}
             />
-            <div className="container">
+            <div className="container-fluid px-0">
                 <div className="row mx-0 justify-content-center">
                     {!loggedIn ? (
-                        <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
+                        <div className="col-12 my-5 py-5 px-0">
                             <div className="container">
                                 <div className="row">
                                     <div className="col-4">
@@ -91,15 +91,36 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
                                                 <input type="password" name="password" id="password" required className="form-control" value={password} onChange={e => setPassword(e.target.value)} />
                                             </div>
                                             <button className="btn btn-success" type="submit">Log In</button><br /><br />
-                                            <Link href="/register">Don&rsquo;t have an account? Create one</Link>
+                                            <Link href="/register" className="text-white">Don&rsquo;t have an account? Create one</Link>
                                         </form>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     ) : (
-                        <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
-                            &nbsp;
+                        <div className="col-12 mx-5 px-5 pt-4 pb-5 mb-5">
+                            <div className="container">
+                                <div className="row">
+                                    <div className="col-md-4 offset-md-2 col-sm-2">
+                                        <img src="https://jortinc.com/img/auctioneer.png" width="100%" alt="Auctioneer" /><br />
+                                        <h5 className="text-white text-center shadowed-text display-4">Are you ready to bid or sell?</h5>
+                                    </div>
+                                    <div className="col-md-6 col-sm-10">
+                                        <div className="container-fluid">
+                                            <div className="row">
+                                                <div className="col-12 d-grid gap-2">
+                                                    <Link className="btn btn-success" type="button" href="/bid">
+                                                        <h2>I am here to bid!</h2>
+                                                    </Link>
+                                                    <Link className="btn btn-warning" type="button" href="/sell">
+                                                        <h2>I am here to sell!</h2>
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>

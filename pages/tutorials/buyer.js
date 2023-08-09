@@ -42,28 +42,18 @@ const BuyerTutorial = () => {
                     <div className="col-12 px-0">
                         <div className="container">
                             <div className="row">
-                                <div className="col-12">
+                                <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded bg-white">
                                     <h2 className="display-2">Buyer Tutorial</h2>
                                     <h4>Webster Defines &ldquo;Auction&rdquo; as:</h4>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-12 px-0">
-                        <blockquote className="blockquote">
-                            <div className="container">
-                                <div className="row">
-                                    <div className="col-12">
-                                        <p>&ldquo;A sale to the highest bidder&rdquo;</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </blockquote>
-                    </div>
-                    <div className="col-12 px-0">
-                        <div className="container">
-                            <div className="row">
-                                <div className="col-12">
+                                    <blockquote className="blockquote">
+                                        <div className="container">
+                                            <div className="row">
+                                                <div className="col-12">
+                                                    <p>&ldquo;A sale to the highest bidder&rdquo;</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </blockquote>
                                     <p>Now with that said a basic tutorial on how JORTinc.com works is it is very simple, You have a main page and you choose whether you&rsquo;re a buyer or seller.</p>
                                     <ol>
                                         <li>Buyer you are directed immediately to the sell page where there is a list of items complete with pictures that are up for sell, some are used and some are services.</li>

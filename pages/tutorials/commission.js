@@ -40,7 +40,7 @@ const CommissionTutorial = () => {
             />
             <div className="container mb-3 pb-3">
                 <div className="row">
-                    <div className="col-12">
+                    <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded bg-white">
                         <h2 className="display-2">Commission Base for JORTinc.com</h2>
                         <p>The following is the commission base for JORTinc.com this may change with a min of a 30 day written notice to all users that is selling items or using their service to post on the website. Also we will provide a 30 day notice to the e-commerce venue that is used. These numbers are tentative and may change in the first 6 months after the site is up and operational.</p>
                         <p>John Throneberry, CEO, JORTinc</p>

@@ -219,7 +219,7 @@ const User = ({ loggedIn, profile }) => {
             <div className="container">
                 <div className="row mx-0 justify-content-center">
                     {loggedIn ? (
-                        <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded">
+                        <div className="col-12 mx-5 my-5 px-5 py-5 border border-5 shadow rounded bg-white">
                             <h3 className="display-5">{firstName}&nbsp;{lastName}</h3>
                             <h5>{email}</h5>
                             {shippingAdds && (
