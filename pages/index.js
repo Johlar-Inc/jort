@@ -30,7 +30,6 @@ const Home = ({ loggedIn, setLoggedIn, setProfile }) => {
             setTimeout(() => {
                 localStorage.setItem("loggedIn", true);
                 localStorage.setItem("profile", JSON.stringify(result.data.user));
-                router.push('/bid');
             }, 1500);
         })
         .catch(error => swal("Uh oh! Something went wrong. Please try again."))
