@@ -1,0 +1,14 @@
+# *
+User-agent: *
+Disallow: /404
+
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://jortinc.com/
+
+# Sitemaps
+Sitemap: https://jortinc.com/sitemap.xml
+Sitemap: https://jortinc.com/server-sitemap.xml

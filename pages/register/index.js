@@ -52,6 +52,7 @@ const Register = ({ profile, setProfile }) => {
                 <title>Register - Junk or Treasures</title>
                 <meta name="title" content="Register - Junk or Treasures" />
                 <meta name="description" content="Junk or Treasures is auctioning leveled up. Your junk could very well be somebody else's treasure. You could also find your next valuable item here." />
+                <meta name="robots" content="all" />
 
                 <meta property="og:type" content="website" />
                 <meta property="og:url" content="https://jortinc.com/register" />
@@ -65,6 +66,7 @@ const Register = ({ profile, setProfile }) => {
                 <meta property="twitter:description" content="Junk or Treasures is auctioning leveled up. Your junk could very well be somebody else's treasure. You could also find your next valuable item here." />
                 <meta property="twitter:image" content="https://jortinc.com/img/jort-logo.png" />
                 <link rel="icon" href="favicon.ico" />
+                <link rel="manifest" href="manifest.json" />
             </Head>
             <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-HFH3XL7FNY"/>
             <Script
